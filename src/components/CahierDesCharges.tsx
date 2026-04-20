@@ -383,7 +383,7 @@ export default function CahierDesCharges() {
           </motion.div>
         </header>
 
-        <Section title=" Contexte et objectifs" icon={Target} id="contexte">
+        <Section title="1. Contexte et objectifs" icon={Target} id="contexte">
           <div className={styles.grid}>
             <Card className={styles.cardFull} index={0}>
               <p className={styles.text}>L'ANIP souhaite se doter d'un progiciel de gestion intégré (PGI) permettant de :</p>
@@ -406,7 +406,7 @@ export default function CahierDesCharges() {
           </div>
         </Section>
 
-        <Section title=" Objectifs fonctionnels principaux" icon={Settings} id="objectifs">
+        <Section title="2. Objectifs fonctionnels principaux" icon={Settings} id="objectifs">
           <div className={styles.grid}>
             <Card title="Piloter la Performance" className={styles.cardMedium} index={1}>
                <p className={styles.text}>Le PGI doit permettre de :</p>
@@ -429,7 +429,7 @@ export default function CahierDesCharges() {
           </div>
         </Section>
 
-        <Section title=" Périmètre fonctionnel" icon={Workflow} id="perimetre">
+        <Section title="3. Périmètre fonctionnel" icon={Workflow} id="perimetre">
           <div className={styles.grid}>
             <Card title="1 Gestion des profils et référentiel métiers" className={styles.cardMedium} index={3}>
               <p className={styles.text}>Création des profils agents :</p>
@@ -501,7 +501,7 @@ export default function CahierDesCharges() {
           </div>
         </Section>
 
-        <Section title=" Tableaux de bord" icon={LayoutDashboard} id="dashboards">
+        <Section title="4. Tableaux de bord" icon={LayoutDashboard} id="dashboards">
           <motion.div className={styles.dashboardShowcase} variants={itemVariants} custom={0}>
             <div className={styles.dashboardImageWrapper}>
               <Image
@@ -529,7 +529,7 @@ export default function CahierDesCharges() {
           </div>
         </Section>
 
-        <Section title=" Exigences fonctionnelles clés" icon={Zap} id="exigences">
+        <Section title="5. Exigences fonctionnelles clés" icon={Zap} id="exigences">
           <div className={styles.grid}>
             <Card className={styles.cardFull} index={16}>
               <List items={[
@@ -543,7 +543,7 @@ export default function CahierDesCharges() {
           </div>
         </Section>
 
-        <Section title=" Autres points clés du projet" icon={ShieldAlert} id="points-cles">
+        <Section title="6. Autres points clés du projet" icon={ShieldAlert} id="points-cles">
           <div className={styles.grid}>
             <Card className={styles.cardFull} index={17}>
               <List items={[
@@ -557,7 +557,7 @@ export default function CahierDesCharges() {
           </div>
         </Section>
 
-        <Section title=" Utilisateurs du système" icon={Users} id="utilisateurs">
+        <Section title="7. Utilisateurs du système" icon={Users} id="utilisateurs">
           <div className={styles.grid}>
             <Card className={styles.cardFull} index={18}>
               <List items={["Agent ANIP", "Chef de service", "DRH", "Direction générale", "Administrateur système", "Usager (pour feedback)"]} />
@@ -565,7 +565,7 @@ export default function CahierDesCharges() {
           </div>
         </Section>
 
-        <Section title=" Indicateurs de succès" icon={CheckCircle2} id="succes">
+        <Section title="8. Indicateurs de succès" icon={CheckCircle2} id="succes">
           <div className={styles.grid}>
             <Card className={styles.cardFull} index={19}>
               <List items={[
@@ -579,7 +579,7 @@ export default function CahierDesCharges() {
           </div>
         </Section>
 
-        <Section title=" Évolutions possibles à moyen terme" icon={BrainCircuit} id="evolutions">
+        <Section title="9. Évolutions possibles à moyen terme" icon={BrainCircuit} id="evolutions">
           <div className={styles.grid}>
             <Card className={styles.cardFull} index={20}>
               <List items={[
