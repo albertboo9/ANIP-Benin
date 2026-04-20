@@ -2,18 +2,28 @@
 
 :root {
   --color-bg: #ffffff;
-  --color-bg-soft: #f8fafc;
+  --color-bg-soft: #fcfdfe;
   --color-text-primary: #0f172a;
   --color-text-secondary: #475569;
   --color-primary: #2563eb;
-  --color-primary-soft: rgba(37, 99, 235, 0.1);
-  --color-accent: #059669;
-  --color-accent-soft: rgba(5, 150, 105, 0.1);
-  --color-border: #e2e8f0;
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(0, 0, 0, 0.05);
-  --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
-  --radius-xl: 1rem;
+  --color-primary-soft: rgba(37, 99, 235, 0.08);
+  
+  /* Bénin Institutional Accents */
+  --color-benin-green: #008751;
+  --color-benin-yellow: #FCD116;
+  --color-benin-red: #E8112D;
+  
+  --color-accent: var(--color-benin-green);
+  --color-accent-soft: rgba(0, 135, 81, 0.08);
+  
+  --color-border: #f1f5f9;
+  --color-border-hover: #e2e8f0;
+  
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --shadow-premium: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  --radius-xl: 1.25rem;
 }
 
 * {

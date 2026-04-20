@@ -23,13 +23,82 @@
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
   line-height: 1.1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   color: var(--color-text-primary);
   margin-bottom: 2rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.titleAccent {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-benin-green) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 99px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.v0Container {
+  margin-top: 4rem;
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.v0ImageWrapper {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--color-border);
+  background: #ffffff;
+  z-index: 2;
+}
+
+.v0Image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.imageGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, var(--color-primary-soft) 0%, transparent 70%);
+  filter: blur(60px);
+  z-index: 1;
+  opacity: 0.5;
+}
+
+.imageCaption {
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .section {
-  margin-bottom: 8rem;
+  margin-bottom: 10rem;
   scroll-margin-top: 100px;
 }
 
@@ -46,9 +115,10 @@
 .sectionTitle::before {
   content: '';
   display: block;
-  width: 40px;
-  height: 2px;
-  background: var(--color-primary);
+  width: 48px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-benin-green), var(--color-benin-yellow));
 }
 
 .subsectionTitle {
@@ -69,19 +139,19 @@
 
 .card {
   background: #ffffff;
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: var(--radius-xl);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.21, 0.47, 0.32, 0.98);
   position: relative;
   overflow: hidden;
   border: 1px solid var(--color-border);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-primary);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px);
+  border-color: var(--color-primary-soft);
+  box-shadow: var(--shadow-premium);
 }
 
 .card::after {
@@ -126,13 +196,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   background: var(--color-primary-soft);
   color: var(--color-primary);
   flex-shrink: 0;
-  margin-top: 0.2rem;
+  margin-top: 0.1rem;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .iconWrapper {
+  transform: scale(1.1);
+  background: var(--color-primary);
+  color: #ffffff;
 }
 
 .subList {
