@@ -127,6 +127,19 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
+  position: relative;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-benin-green));
+  border-radius: 1px;
 }
 
 .sectionTitle svg {
