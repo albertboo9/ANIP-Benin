@@ -36,22 +36,35 @@ const containerVariants = {
 } as const;
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 40,
-    scale: 0.95,
-    filter: "blur(10px)" 
-  },
+  hidden: (direction: number) => ({
+    opacity: 0,
+    x: direction === 0 ? 0 : direction > 0 ? 100 : -100,
+    y: direction === 0 ? 50 : 0,
+    scale: 0.9,
+    filter: "blur(15px)",
+  }),
   visible: {
     opacity: 1,
+    x: 0,
     y: 0,
     scale: 1,
     filter: "blur(0px)",
-    transition: { 
-      duration: 0.8, 
-      ease: [0.21, 0.47, 0.32, 0.98] 
+    transition: {
+      duration: 1.2,
+      ease: [0.22, 1, 0.36, 1], // Quintic out for premium feel
     },
   },
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction === 0 ? 0 : direction > 0 ? -50 : 50,
+    y: direction === 0 ? -50 : 0,
+    scale: 0.95,
+    filter: "blur(10px)",
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
 } as const;
 
 const cardHoverVariants = {
@@ -84,6 +97,23 @@ const iconAnimation = {
   }
 };
 
+const titleVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: -20,
+    filter: "blur(4px)"
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: "blur(0px)",
+    transition: {
+      duration: 1.8,
+      ease: [0.33, 1, 0.68, 1], // Natural easeOutCubic
+    }
+  }
+};
+
 const imageVariants = {
   hidden: { 
     opacity: 0, 
@@ -108,11 +138,15 @@ function Section({ title, icon: Icon, children, id }: { title: string, icon: Rea
       className={styles.section}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: false, margin: "-15% 0px -15% 0px" }}
       variants={containerVariants}
       id={id}
     >
-      <motion.h2 className={styles.sectionTitle} variants={itemVariants}>
+      <motion.h2 
+        className={styles.sectionTitle} 
+        variants={itemVariants}
+        custom={0}
+      >
         {Icon && <Icon size={32} className="text-primary" />}
         {title}
       </motion.h2>
@@ -121,8 +155,9 @@ function Section({ title, icon: Icon, children, id }: { title: string, icon: Rea
   );
 }
 
-function Card({ title, children, icon: Icon, className = "" }: { title?: string, children: React.ReactNode, icon?: React.ElementType, className?: string }) {
+function Card({ title, children, icon: Icon, className = "", index = 0 }: { title?: string, children: React.ReactNode, icon?: React.ElementType, className?: string, index?: number }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const direction = index % 2 === 0 ? -1 : 1; // Alternating slide directions
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -136,9 +171,11 @@ function Card({ title, children, icon: Icon, className = "" }: { title?: string,
     <motion.div 
       className={`${styles.card} ${className}`} 
       variants={itemVariants}
-      initial="rest"
+      custom={direction}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, margin: "-10% 0px -10% 0px" }}
       whileHover="hover"
-      animate="rest"
       onMouseMove={handleMouseMove}
       style={{
         // @ts-ignore
@@ -311,7 +348,12 @@ export default function CahierDesCharges() {
       <div className={styles.container}>
         <header className={styles.documentHeader}>
 
-          <motion.h1 className={styles.title} variants={itemVariants}>
+          <motion.h1 
+            className={styles.title} 
+            variants={titleVariants}
+            initial="hidden"
+            animate="visible"
+          >
             Mini Cahier des Charges Fonctionnel<br />
             <span className={styles.titleAccent}>PGI de Pilotage et Optimisation de la Performance des Agents – ANIP Bénin</span>
           </motion.h1>
@@ -339,7 +381,7 @@ export default function CahierDesCharges() {
 
         <Section title=" Contexte et objectifs" icon={Target} id="contexte">
           <div className={styles.grid}>
-            <Card className={styles.cardFull}>
+            <Card className={styles.cardFull} index={0}>
               <p className={styles.text}>L&apos;ANIP souhaite se doter d&apos;un progiciel de gestion intégré (PGI) permettant de :</p>
               <div className={styles.grid} style={{ marginTop: 0 }}>
                 <div style={{ gridColumn: 'span 6' }}>
@@ -362,7 +404,7 @@ export default function CahierDesCharges() {
 
         <Section title=" Objectifs fonctionnels principaux" icon={Settings} id="objectifs">
           <div className={styles.grid}>
-            <Card title="Piloter la Performance" icon={TrendingUp} className={styles.cardMedium}>
+            <Card title="Piloter la Performance" icon={TrendingUp} className={styles.cardMedium} index={1}>
                <p className={styles.text}>Le PGI doit permettre de :</p>
                <List items={[
                 "Définir et piloter les OKR (Objectives & Key Results)",
@@ -371,7 +413,7 @@ export default function CahierDesCharges() {
                 "Générer un scoring dynamique des agents"
               ]} />
             </Card>
-            <Card title="Optimiser & Engager" icon={Zap} className={styles.cardMedium}>
+            <Card title="Optimiser & Engager" icon={Zap} className={styles.cardMedium} index={2}>
                <List items={[
                 "Identifier les écarts de performance vs objectifs",
                 "Proposer des recommandations intelligentes (IA)",
@@ -385,33 +427,33 @@ export default function CahierDesCharges() {
 
         <Section title=" Périmètre fonctionnel" icon={Workflow} id="perimetre">
           <div className={styles.grid}>
-            <Card title="1 Gestion des profils et référentiel métiers" icon={Users} className={styles.cardMedium}>
+            <Card title="1 Gestion des profils et référentiel métiers" icon={Users} className={styles.cardMedium} index={3}>
               <p className={styles.text}>Création des profils agents :</p>
               <List items={["Identité", "Fonction / métier", "Service / direction", "Rôle et responsabilités"]} />
               <p className={styles.text}>Référentiel métiers :</p>
               <List items={["Définition des compétences attendues", "Mapping compétences ↔ postes"]} />
             </Card>
 
-            <Card title="2 Module OKR & KPI" icon={BarChart3} className={styles.cardMedium}>
+            <Card title="2 Module OKR & KPI" icon={BarChart3} className={styles.cardMedium} index={4}>
               <p className={styles.text}>Définition des objectifs :</p>
               <List items={["Objectifs stratégiques (organisation)", "Objectifs opérationnels (service)", "Objectifs individuels (agent)"]} />
               <p className={styles.text}>Définition des KPI associés :</p>
               <List items={["Quantitatifs (ex : nombre de dossiers traités)", "Qualitatifs (ex : satisfaction usagers, taux de validation des dossiers )"]} />
             </Card>
 
-            <Card title="3 Module d&apos;évaluation continue" icon={CheckCircle2} className={styles.cardSmall}>
+            <Card title="3 Module d&apos;évaluation continue" icon={CheckCircle2} className={styles.cardSmall} index={5}>
               <p className={styles.text}>Saisie automatique et/ou manuelle des performances</p>
               <p className={styles.text}>Évaluation journalière basée sur :</p>
               <List items={["KPI", "Tâches réalisées", "Qualité du travail", "Historisation des performances", "Alertes en cas de sous-performance"]} />
             </Card>
 
-            <Card title="4 Module de scoring et analytics" icon={TrendingUp} className={styles.cardSmall}>
+            <Card title="4 Module de scoring et analytics" icon={TrendingUp} className={styles.cardSmall} index={6}>
               <p className={styles.text}>Calcul automatique d&apos;un score de performance global</p>
               <p className={styles.text}>Pondération par :</p>
               <List items={["KPI", "Importance des tâches", "Priorités stratégiques", "Classement des agents (ranking)"]} />
             </Card>
 
-            <Card title="5 Module IA – Coaching & recommandations" icon={BrainCircuit} className={styles.cardSmall}>
+            <Card title="5 Module IA – Coaching & recommandations" icon={BrainCircuit} className={styles.cardSmall} index={7}>
               <p className={styles.text}>Assistant intelligent (chat + suggestion + appel)</p>
               <p className={styles.text}>Fonctionnalités :</p>
               <List items={[
@@ -422,14 +464,14 @@ export default function CahierDesCharges() {
               ]} />
             </Card>
 
-            <Card title="6 Module LMS (formation en ligne)" icon={GraduationCap} className={styles.cardMedium}>
+            <Card title="6 Module LMS (formation en ligne)" icon={GraduationCap} className={styles.cardMedium} index={8}>
               <p className={styles.text}>Catalogue de formations :</p>
               <List items={["Internes", "Externes"]} />
               <p className={styles.text}>Recommandation automatique de formations selon :</p>
               <List items={["Faiblesses détectées", "Objectifs à atteindre"]} />
             </Card>
 
-            <Card title="7 Workflow de gestion des formations" icon={Workflow} className={styles.cardMedium}>
+            <Card title="7 Workflow de gestion des formations" icon={Workflow} className={styles.cardMedium} index={9}>
               <List items={[
                 "Demande de formation par agent",
                 "Validation hiérarchique",
@@ -439,17 +481,17 @@ export default function CahierDesCharges() {
               ]} />
             </Card>
 
-            <Card title="8 Module de feedback 360°" icon={MessageSquare} className={styles.cardSmall}>
+            <Card title="8 Module de feedback 360°" icon={MessageSquare} className={styles.cardSmall} index={10}>
               <p className={styles.text}>Feedback multi-acteurs :</p>
               <List items={["Supérieurs hiérarchiques", "Collègues (pairs)", "Usagers"]} />
               <List items={["Système de notation + commentaires", "Intégration dans le scoring global"]} />
             </Card>
 
-            <Card title="9 Module collaboratif" icon={Users} className={styles.cardSmall}>
+            <Card title="9 Module collaboratif" icon={Users} className={styles.cardSmall} index={11}>
               <List items={["Messagerie interne", "Espaces de travail par équipe/ service", "Partage de documents", "Gestion de projets simples"]} />
             </Card>
 
-            <Card title="10 Module de gamification" icon={Gamepad2} className={styles.cardSmall}>
+            <Card title="10 Module de gamification" icon={Gamepad2} className={styles.cardSmall} index={12}>
               <p className={styles.text}>Système de points et badges pour stimuler les agents</p>
               <List items={["Classements?", "Défis et objectifs collectifs", "Récompenses symboliques"]} />
             </Card>
@@ -457,7 +499,7 @@ export default function CahierDesCharges() {
         </Section>
 
         <Section title=" Tableaux de bord" icon={LayoutDashboard} id="dashboards">
-          <motion.div className={styles.dashboardShowcase} variants={itemVariants}>
+          <motion.div className={styles.dashboardShowcase} variants={itemVariants} custom={0}>
             <div className={styles.dashboardImageWrapper}>
               <Image
                 src="/assets/V0 PGI PERFORMANCE ANIP 0426.png"
@@ -472,13 +514,13 @@ export default function CahierDesCharges() {
             </p>
           </motion.div>
           <div className={styles.grid}>
-            <Card title="Dashboard agent" icon={LayoutDashboard} className={styles.cardSmall}>
+            <Card title="Dashboard agent" icon={LayoutDashboard} className={styles.cardSmall} index={13}>
               <List items={["Score personnel", "KPI", "Objectifs", "Recommandations", "formation (demandees, validées, en cours)"]} />
             </Card>
-            <Card title="Dashboard manager/ chef de service" icon={Users} className={styles.cardSmall}>
+            <Card title="Dashboard manager/ chef de service" icon={Users} className={styles.cardSmall} index={14}>
               <List items={["Performance equipe", "Alertes", "Analyse comparative", "Suivi des demandes de formation"]} />
             </Card>
-            <Card title="Dashboard direction" icon={TrendingUp} className={styles.cardSmall}>
+            <Card title="Dashboard direction" icon={TrendingUp} className={styles.cardSmall} index={15}>
               <List items={["Performance globale", "Indicateurs strategiques", "Suivi des engagements"]} />
             </Card>
           </div>
@@ -486,7 +528,7 @@ export default function CahierDesCharges() {
 
         <Section title=" Exigences fonctionnelles clés" icon={Zap} id="exigences">
           <div className={styles.grid}>
-            <Card className={styles.cardFull}>
+            <Card className={styles.cardFull} index={16}>
               <List items={[
                 "Mise à jour des données en temps réel",
                 "Système de recommandation intelligent (IA)",
@@ -500,7 +542,7 @@ export default function CahierDesCharges() {
 
         <Section title=" Autres points clés du projet" icon={ShieldAlert} id="points-cles">
           <div className={styles.grid}>
-            <Card className={styles.cardLarge}>
+            <Card className={styles.cardLarge} index={17}>
               <List items={[
                 "Sécurité des données",
                 "Haute disponibilité du progiciel",
@@ -509,7 +551,7 @@ export default function CahierDesCharges() {
                 "Traçabilité des actions"
               ]} />
             </Card>
-            <Card title="Utilisateurs du système" icon={Users} className={styles.cardSmall}>
+            <Card title="Utilisateurs du système" icon={Users} className={styles.cardSmall} index={18}>
               <List items={["Agent ANIP", "Chef de service", "DRH", "Direction générale", "Administrateur système", "Usager (pour feedback)"]} />
             </Card>
           </div>
@@ -517,7 +559,7 @@ export default function CahierDesCharges() {
 
         <Section title=" Indicateurs de succès & Évolutions" icon={TrendingUp} id="succes">
           <div className={styles.grid}>
-            <Card title="Indicateurs de succès" icon={CheckCircle2} className={styles.cardMedium}>
+            <Card title="Indicateurs de succès" icon={CheckCircle2} className={styles.cardMedium} index={19}>
               <List items={[
                 "Amélioration de la performance individuelle",
                 "Augmentation du taux de formation complétée",
@@ -526,7 +568,7 @@ export default function CahierDesCharges() {
                 "Progression de la satisfaction des usagers"
               ]} />
             </Card>
-            <Card title="Évolutions possibles" icon={BrainCircuit} className={styles.cardMedium}>
+            <Card title="Évolutions possibles" icon={BrainCircuit} className={styles.cardMedium} index={20}>
               <List items={[
                 "Intégration biométrique (présence / activité)",
                 "Analyse prédictive des performances",
