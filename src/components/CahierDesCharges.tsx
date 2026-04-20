@@ -131,7 +131,6 @@ export default function CahierDesCharges() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
-            <span className={styles.badge}>Vision Stratégique 2026</span>
             <h1 className={styles.title}>
               Mini Cahier des Charges Fonctionnel<br />
               <span className={styles.titleAccent}>PGI de Pilotage et Optimisation de la Performance des Agents – ANIP Bénin</span>
