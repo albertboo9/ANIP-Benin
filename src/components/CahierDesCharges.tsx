@@ -168,8 +168,8 @@ function Card({ title, children, icon: Icon, className = "", index = 0 }: { titl
   };
 
   return (
-    <motion.div 
-      className={`${styles.card} ${className}`} 
+    <motion.div
+      className={`${styles.card} ${className}`}
       variants={itemVariants}
       custom={direction}
       initial="hidden"
@@ -183,30 +183,34 @@ function Card({ title, children, icon: Icon, className = "", index = 0 }: { titl
         "--mouse-y": `${mousePosition.y}px`,
       }}
     >
-      <motion.div 
+      <motion.div
         className={styles.cardGlow}
         variants={{
           rest: { opacity: 0 },
           hover: { opacity: 1 }
         }}
       />
-      {Icon && (
-        <motion.div 
-          className={styles.iconWrapper} 
-          style={{ width: "40px", height: "40px", marginBottom:"1.5rem" }}
-          variants={iconAnimation }
-        >
-          <Icon size={24} />
-        </motion.div>
+      {title && (
+        <div className={styles.cardHeader}>
+          <h3 className={styles.cardHeaderTitle}>{title}</h3>
+        </div>
       )}
-      {title && <h3 className={styles.subsectionTitle}>{title}</h3>}
-      <motion.div 
+      <motion.div
         style={{ position: 'relative', zIndex: 1 }}
         variants={{
           rest: { y: 0 },
           hover: { y: -2 }
         }}
       >
+        {Icon && (
+          <motion.div
+            className={styles.iconWrapper}
+            style={{ width: "40px", height: "40px", marginBottom:"1.5rem" }}
+            variants={iconAnimation }
+          >
+            <Icon size={24} />
+          </motion.div>
+        )}
         {children}
       </motion.div>
     </motion.div>
@@ -355,7 +359,7 @@ export default function CahierDesCharges() {
             animate="visible"
           >
             Mini Cahier des Charges Fonctionnel<br />
-            <span className={styles.titleAccent}>PGI de Pilotage et Optimisation de la Performance des Agents – ANIP Bénin</span>
+            <span className={styles.titleAccent}>PGI de Pilotage et Optimisation de la Performance des Agents – ANIP</span>
           </motion.h1>
           
           <motion.div 
