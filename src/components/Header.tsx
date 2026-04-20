@@ -22,15 +22,12 @@ export default function Header() {
             className={styles.logo}
           />
           <div className={styles.divider}></div>
-          <span className={styles.brandTitle}>Performance</span>
+          <span className={styles.brandTitle}>ANIP Bénin</span>
         </div>
         
         <nav className={styles.nav}>
           <a href="#" className={styles.navLink}>À propos</a>
           <a href="#" className={styles.navLink}>Impact</a>
-          <button className="btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}>
-            Accès Portail
-          </button>
         </nav>
       </div>
     </motion.header>

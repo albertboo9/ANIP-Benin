@@ -42,19 +42,7 @@ export default function Hero() {
             Une plateforme intelligente conçue pour l'excellence opérationnelle de l'ANIP.
           </p>
 
-          <motion.div 
-            className={styles.ctaGroup}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-          >
-            <button className="btn-primary">
-              Découvrir le PGI <ArrowRight size={18} />
-            </button>
-            <button className={styles.btnSecondary}>
-              Voir la Démo
-            </button>
-          </motion.div>
+
         </motion.div>
 
         <motion.div
