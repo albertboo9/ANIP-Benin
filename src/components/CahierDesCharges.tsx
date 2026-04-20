@@ -25,18 +25,38 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.15,
+      delayChildren: 0.3,
     },
   },
 } as const;
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" as const },
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] },
   },
+} as const;
+
+const imageVariants = {
+  hidden: { 
+    opacity: 0, 
+    scale: 1.1,
+    filter: "blur(20px)",
+  },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { 
+      duration: 1.6, 
+      ease: [0.21, 0.47, 0.32, 0.98],
+      delay: 0.5
+    }
+  }
 } as const;
 
 function Section({ title, icon: Icon, children, id }: { title: string, icon: React.ElementType, children: React.ReactNode, id?: string }) {
@@ -107,14 +127,34 @@ export default function CahierDesCharges() {
       <div className={styles.container}>
         <header className={styles.documentHeader}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
             <h1 className={styles.title}>
               Mini Cahier des Charges Fonctionnel<br />
-              PGI de Pilotage et Optimisation de la Performance des Agents – ANIP Bénin
+              <span className={styles.titleAccent}>PGI de Pilotage et Optimisation de la Performance des Agents – ANIP Bénin</span>
             </h1>
+          </motion.div>
+
+          <motion.div 
+            className={styles.v0Container}
+            variants={imageVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <div className={styles.imageGlow}></div>
+            <div className={styles.v0ImageWrapper}>
+              <Image 
+                src="/assets/V0 PGI PERFORMANCE ANIP 0426.png"
+                alt="V0 PGI PERFORMANCE ANIP"
+                width={1200}
+                height={675}
+                className={styles.v0Image}
+                priority
+              />
+            </div>
+            <p className={styles.imageCaption}>Aperçu de la Vision V0 du Progiciel</p>
           </motion.div>
         </header>
 
