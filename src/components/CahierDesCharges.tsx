@@ -342,14 +342,14 @@ export default function CahierDesCharges() {
               ]} />
             </Card>
 
-            <Card title="6 Module LMS (formation en ligne)" icon={GraduationCap} className={styles.cardLarge}>
+            <Card title="6 Module LMS (formation en ligne)" icon={GraduationCap} className={styles.cardMedium}>
               <p className={styles.text}>Catalogue de formations :</p>
               <List items={["Internes", "Externes"]} />
               <p className={styles.text}>Recommandation automatique de formations selon :</p>
               <List items={["Faiblesses détectées", "Objectifs à atteindre"]} />
             </Card>
 
-            <Card title="7 Workflow de gestion des formations" icon={Workflow} className={styles.cardSmall}>
+            <Card title="7 Workflow de gestion des formations" icon={Workflow} className={styles.cardMedium}>
               <List items={[
                 "Demande de formation par agent",
                 "Validation hiérarchique",
@@ -359,7 +359,7 @@ export default function CahierDesCharges() {
               ]} />
             </Card>
 
-            <Card title="8 Module de feedback 360°" icon={MessageSquare} className={styles.cardMedium}>
+            <Card title="8 Module de feedback 360°" icon={MessageSquare} className={styles.cardSmall}>
               <p className={styles.text}>Feedback multi-acteurs :</p>
               <List items={["Supérieurs hiérarchiques", "Collègues (pairs)", "Usagers"]} />
               <List items={["Système de notation + commentaires", "Intégration dans le scoring global"]} />
