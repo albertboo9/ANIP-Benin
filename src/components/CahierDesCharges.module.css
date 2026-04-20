@@ -116,14 +116,17 @@
 }
 
 .sectionTitle {
-  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  font-size: clamp(2rem, 4.5vw, 3rem);
   font-weight: 800;
   margin-bottom: 3.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1.25rem;
-  color: var(--color-text-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-benin-green) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
@@ -138,7 +141,7 @@
   transform: translateX(-50%);
   width: 60px;
   height: 2px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-benin-green));
+  background: var(--color-primary);
   border-radius: 1px;
 }
 
