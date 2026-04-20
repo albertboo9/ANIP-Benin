@@ -9,13 +9,13 @@ export default function Header() {
           <Image
             src="/assets/ANIP-Logo-HD.png"
             alt="ANIP Benin"
-            width={80}
-            height={80}
+            width={300}
+            height={300}
             className={styles.logo}
           />
           <div className={styles.divider}></div>
           <div className={styles.brandInfo}>
-            <span className={styles.brandTitle}>ANIP Benin</span>
+            <span className={styles.brandTitle}>ANIP</span>
             <span className={styles.brandSubtitle}>Agence Nationale d&apos;Identification des Personnes</span>
           </div>
         </div>
