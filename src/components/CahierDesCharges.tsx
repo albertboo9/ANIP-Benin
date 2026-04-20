@@ -142,7 +142,6 @@ export default function CahierDesCharges() {
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1,
-      smoothTouch: false,
       touchMultiplier: 2,
       infinite: false,
     });
@@ -209,7 +208,8 @@ export default function CahierDesCharges() {
               number: {
                 density: {
                   enable: true,
-                  area: 800,
+                  width: 800,
+                  height: 800,
                 },
                 value: 80,
               },
