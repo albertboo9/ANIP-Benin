@@ -1,0 +1,95 @@
+.upInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+}
+
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loopContainer {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.svgPath {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+  width: 120px;
+}
+
+.iconBox {
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: 50%;
+  border: 1px solid rgba(12, 29, 54, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-primary);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.node:hover .iconBox {
+  transform: scale(1.1);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-medium);
+}
+
+.nodeLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
+}
+
+.centerOrb {
+  width: 120px;
+  height: 120px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  box-shadow: 0 0 0 10px var(--color-bg), 0 20px 40px rgba(12, 29, 54, 0.1);
+  border: 1px solid rgba(12, 29, 54, 0.05);
+}
+
+.orbInner {
+  font-weight: 900;
+  color: var(--color-primary);
+  letter-spacing: 0.2em;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .loopContainer {
+    width: 350px;
+    height: 350px;
+    transform: scale(0.8);
+  }
+}

@@ -1,0 +1,148 @@
+.aiInner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.aiCapabilities {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.capItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+}
+
+.simulation {
+  display: flex;
+  justify-content: center;
+}
+
+.chatWindow {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+}
+
+.chatHeader {
+  background: var(--color-surface);
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(12, 29, 54, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.aiStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.messages {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.message {
+  display: flex;
+  gap: 1rem;
+  max-width: 85%;
+}
+
+.messageBot {
+  align-self: flex-start;
+}
+
+.messageUser {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.bubble {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.messageBot .bubble {
+  background: white;
+  color: var(--color-text-primary);
+  border: 1px solid rgba(12, 29, 54, 0.05);
+}
+
+.messageUser .bubble {
+  background: var(--color-primary);
+  color: white;
+}
+
+.actionCard {
+  margin-top: 1.25rem;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .aiInner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .textContent {
+    align-items: center;
+  }
+  
+  .aiCapabilities {
+    align-items: center;
+  }
+}
