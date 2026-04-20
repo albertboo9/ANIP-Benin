@@ -1,17 +1,15 @@
 .header {
   position: fixed;
-  top: 1.5rem;
+  top: 0;
   left: 0;
   right: 0;
-  margin: 0 auto;
-  width: 90%;
-  max-width: 1200px;
-  height: 72px;
-  border-radius: 9999px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
   z-index: 1000;
   display: flex;
   align-items: center;
-  padding: 0 2rem;
+  height: 80px;
+  padding: 0 1rem;
 }
 
 .headerInner {
@@ -44,25 +42,12 @@
   letter-spacing: -0.02em;
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-}
-
-.navLink {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  transition: color 0.2s;
-}
-
-.navLink:hover {
-  color: var(--color-primary);
-}
-
 @media (max-width: 768px) {
-  .navLink {
-    display: none;
+  .header {
+    padding: 0 0.75rem;
+  }
+
+  .brandTitle {
+    font-size: 1.1rem;
   }
 }

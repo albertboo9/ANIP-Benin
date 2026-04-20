@@ -1,24 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --color-bg: #F0F7FF;
-  --color-surface: rgba(255, 255, 255, 0.7);
-  --color-text-primary: #0C1D36;
-  --color-text-secondary: #4B6180;
-  
-  --color-primary: #2563EB;
-  --color-primary-soft: #DBEAFE;
-  --color-accent: #3B82F6;
-  --color-green: #10B981;
-  --color-green-soft: #D1FAE5;
-  
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-xl: 40px;
-  
-  --shadow-soft: 0 10px 30px -10px rgba(12, 29, 54, 0.1);
-  --shadow-medium: 0 20px 50px -15px rgba(12, 29, 54, 0.15);
+  --color-bg: #030712;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #9ca3af;
+  --color-primary: #3b82f6;
+  --color-primary-soft: rgba(59, 130, 246, 0.1);
+  --color-accent: #10b981;
+  --color-accent-soft: rgba(16, 185, 129, 0.1);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(17, 24, 39, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --radius-xl: 1.5rem;
 }
 
 * {
@@ -33,49 +27,7 @@ html, body {
   background-color: var(--color-bg);
   color: var(--color-text-primary);
   font-family: 'Inter', sans-serif;
-  scroll-behavior: smooth;
-}
-
-/* Premium Mesh Background */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background: 
-    radial-gradient(circle at 0% 0%, #E0F2FE 0%, transparent 50%),
-    radial-gradient(circle at 100% 0%, #DBEAFE 0%, transparent 50%),
-    radial-gradient(circle at 100% 100%, #F0F9FF 0%, transparent 50%),
-    radial-gradient(circle at 0% 100%, #E0F2FE 0%, transparent 50%);
-  filter: blur(80px);
-}
-
-.scroll-container {
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scrollbar-width: none; 
-}
-
-.scroll-container::-webkit-scrollbar {
-  display: none;
-}
-
-.section-container {
-  min-height: 100vh;
-  width: 100%;
-  scroll-snap-align: start;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 8rem 2rem;
-  overflow-x: hidden; /* Prevent horizontal bleed */
-  flex-shrink: 0;
+  line-height: 1.6;
 }
 
 .container-inner {
@@ -86,11 +38,11 @@ body::before {
 
 /* Premium Glassmorphism */
 .glass {
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-medium);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-premium);
 }
 
 /* High-end Typography */
