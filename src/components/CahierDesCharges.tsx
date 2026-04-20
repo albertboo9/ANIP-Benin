@@ -51,7 +51,7 @@ const itemVariants = {
     filter: "blur(0px)",
     transition: {
       duration: 1.2,
-      ease: [0.22, 1, 0.36, 1], // Quintic out for premium feel
+      ease: [0.22, 1, 0.36, 1] as any, // Type cast for custom bezier
     },
   },
   exit: (direction: number) => ({
@@ -62,7 +62,7 @@ const itemVariants = {
     filter: "blur(10px)",
     transition: {
       duration: 0.8,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.22, 1, 0.36, 1] as any,
     },
   }),
 } as const;
@@ -86,11 +86,11 @@ const cardHoverVariants = {
 
 const iconAnimation = {
   rest: { scale: 1, rotate: 0 },
-  hover: { 
-    scale: 1.2, 
+  hover: {
+    scale: 1.2,
     rotate: 5,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 300,
       damping: 10
     }
@@ -109,7 +109,7 @@ const titleVariants = {
     filter: "blur(0px)",
     transition: {
       duration: 1.8,
-      ease: [0.33, 1, 0.68, 1], // Natural easeOutCubic
+      ease: [0.33, 1, 0.68, 1] as any, // Type cast for custom bezier
     }
   }
 };
@@ -194,7 +194,7 @@ function Card({ title, children, icon: Icon, className = "", index = 0 }: { titl
         <motion.div 
           className={styles.iconWrapper} 
           style={{ width: "40px", height: "40px", marginBottom:"1.5rem" }}
-          variants={iconAnimation}
+          variants={iconAnimation }
         >
           <Icon size={24} />
         </motion.div>
