@@ -116,22 +116,27 @@
 }
 
 .sectionTitle {
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
-  font-weight: 700;
-  margin-bottom: 3rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  margin-bottom: 3.5rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   color: var(--color-text-primary);
+  letter-spacing: -0.02em;
 }
 
-.sectionTitle::before {
+.sectionTitle svg {
+  color: var(--color-benin-green);
+  filter: drop-shadow(0 2px 4px rgba(0, 135, 81, 0.2));
+}
+
+.sectionTitle::after {
   content: '';
-  display: block;
-  width: 48px;
-  height: 4px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--color-benin-green), var(--color-benin-yellow));
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-border), transparent);
+  margin-left: 1rem;
 }
 
 .subsectionTitle {
@@ -146,40 +151,75 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .card {
   background: #ffffff;
   padding: 2.5rem;
   border-radius: var(--radius-xl);
-  transition: all 0.4s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
   overflow: hidden;
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cardFull {
+  grid-column: span 12;
+}
+
+.cardLarge {
+  grid-column: span 8;
+}
+
+.cardMedium {
+  grid-column: span 6;
+}
+
+.cardSmall {
+  grid-column: span 4;
+}
+
+@media (max-width: 1024px) {
+  .cardLarge, .cardMedium, .cardSmall {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .cardFull, .cardLarge, .cardMedium, .cardSmall {
+    grid-column: span 1;
+  }
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  border-color: var(--color-primary-soft);
+  transform: translateY(-5px) scale(1.01);
+  border-color: var(--color-benin-green);
   box-shadow: var(--shadow-premium);
 }
 
-.card::after {
+.card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-benin-green), var(--color-benin-yellow), var(--color-benin-red));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.card:hover::after {
+.card:hover::before {
   opacity: 1;
 }
 
