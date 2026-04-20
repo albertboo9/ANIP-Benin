@@ -1,16 +1,29 @@
 .main {
   min-height: 100vh;
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #fcfdfe 0%, #ffffff 100%);
   color: var(--color-text-primary);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   padding-bottom: 10rem;
+  position: relative;
+}
+
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 4rem 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .documentHeader {

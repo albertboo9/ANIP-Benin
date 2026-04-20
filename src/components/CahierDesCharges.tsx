@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { 
@@ -18,6 +19,9 @@ import {
   ShieldAlert,
   Zap
 } from "lucide-react";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+import Lenis from "@studio-freight/lenis";
 import styles from "./CahierDesCharges.module.css";
 
 const containerVariants = {
@@ -122,8 +126,108 @@ function List({ items }: { items: (string | { text: string, subItems?: string[] 
 }
 
 export default function CahierDesCharges() {
+  const [init, setInit] = useState(false);
+
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    });
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
   return (
     <main className={styles.main}>
+      {init && (
+        <Particles
+          id="tsparticles"
+          options={{
+            background: {
+              color: {
+                value: "transparent",
+              },
+            },
+            fpsLimit: 120,
+            interactivity: {
+              events: {
+                onHover: {
+                  enable: true,
+                  mode: "repulse",
+                },
+              },
+              modes: {
+                repulse: {
+                  distance: 100,
+                  duration: 0.4,
+                },
+              },
+            },
+            particles: {
+              color: {
+                value: ["#2563eb", "#008751", "#FCD116"],
+              },
+              links: {
+                color: "#cbd5e1",
+                distance: 150,
+                enable: true,
+                opacity: 0.3,
+                width: 1,
+              },
+              move: {
+                direction: "none",
+                enable: true,
+                outModes: {
+                  default: "bounce",
+                },
+                random: false,
+                speed: 1.5,
+                straight: false,
+              },
+              number: {
+                density: {
+                  enable: true,
+                  width: 800,
+                  height: 800,
+                },
+                value: 80,
+              },
+              opacity: {
+                value: 0.2,
+              },
+              shape: {
+                type: "circle",
+              },
+              size: {
+                value: { min: 1, max: 3 },
+              },
+            },
+            detectRetina: true,
+          }}
+          className={styles.particles}
+        />
+      )}
       <div className={styles.container}>
         <header className={styles.documentHeader}>
           <motion.div
