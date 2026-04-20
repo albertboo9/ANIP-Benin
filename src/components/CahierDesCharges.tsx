@@ -386,19 +386,19 @@ export default function CahierDesCharges() {
         <Section title=" Contexte et objectifs" icon={Target} id="contexte">
           <div className={styles.grid}>
             <Card className={styles.cardFull} index={0}>
-              <p className={styles.text}>L&apos;ANIP souhaite se doter d&apos;un progiciel de gestion intégré (PGI) permettant de :</p>
+              <p className={styles.text}>L'ANIP souhaite se doter d'un progiciel de gestion intégré (PGI) permettant de :</p>
               <div className={styles.grid} style={{ marginTop: 0 }}>
                 <div style={{ gridColumn: 'span 6' }}>
                   <List items={[
                     "Suivre et améliorer la performance des agents en temps réel",
-                    "Structurer l&apos;évaluation quotidienne des agents",
+                    "Structurer l'évaluation quotidienne des agents",
                     "Identifier automatiquement les écarts de performance"
                   ]} />
                 </div>
                 <div style={{ gridColumn: 'span 6' }}>
                   <List items={[
                     "Proposer des actions correctives (coaching, formation, feedback)",
-                    "Développer les compétences via un système intelligent d&apos;upskilling"
+                    "Développer les compétences via un système intelligent d'upskilling"
                   ]} />
                 </div>
               </div>
@@ -445,14 +445,14 @@ export default function CahierDesCharges() {
               <List items={["Quantitatifs (ex : nombre de dossiers traités)", "Qualitatifs (ex : satisfaction usagers, taux de validation des dossiers )"]} />
             </Card>
 
-            <Card title="3 Module d&apos;évaluation continue" icon={CheckCircle2} className={styles.cardSmall} index={5}>
+            <Card title="3 Module d'évaluation continue" icon={CheckCircle2} className={styles.cardSmall} index={5}>
               <p className={styles.text}>Saisie automatique et/ou manuelle des performances</p>
               <p className={styles.text}>Évaluation journalière basée sur :</p>
               <List items={["KPI", "Tâches réalisées", "Qualité du travail", "Historisation des performances", "Alertes en cas de sous-performance"]} />
             </Card>
 
             <Card title="4 Module de scoring et analytics" icon={TrendingUp} className={styles.cardSmall} index={6}>
-              <p className={styles.text}>Calcul automatique d&apos;un score de performance global</p>
+              <p className={styles.text}>Calcul automatique d'un score de performance global</p>
               <p className={styles.text}>Pondération par :</p>
               <List items={["KPI", "Importance des tâches", "Priorités stratégiques", "Classement des agents (ranking)"]} />
             </Card>
@@ -514,7 +514,7 @@ export default function CahierDesCharges() {
               />
             </div>
             <p className={styles.dashboardCaption}>
-              Vue d&apos;ensemble du PGI - Suivi de la performance des agents en temps reel
+              Vue d'ensemble du PGI - Suivi de la performance des agents en temps réel
             </p>
           </motion.div>
           <div className={styles.grid}>
@@ -536,7 +536,7 @@ export default function CahierDesCharges() {
               <List items={[
                 "Mise à jour des données en temps réel",
                 "Système de recommandation intelligent (IA)",
-                "Personnalisation selon le métier de l&apos;utilisateur",
+                "Personnalisation selon le métier de l'utilisateur",
                 "Accessibilité web et mobile",
                 "Interface simple, ergonomique et intuitive"
               ]} />
@@ -546,24 +546,29 @@ export default function CahierDesCharges() {
 
         <Section title=" Autres points clés du projet" icon={ShieldAlert} id="points-cles">
           <div className={styles.grid}>
-            <Card className={styles.cardLarge} index={17}>
+            <Card className={styles.cardFull} index={17}>
               <List items={[
                 "Sécurité des données",
                 "Haute disponibilité du progiciel",
-                "Scalabilité (nombre d&apos;agents élevé)",
+                "Scalabilité (nombre d'agents élevé)",
                 "Interopérabilité avec systèmes existants ANIP à prévoir",
                 "Traçabilité des actions"
               ]} />
             </Card>
-            <Card title="Utilisateurs du système" icon={Users} className={styles.cardSmall} index={18}>
+          </div>
+        </Section>
+
+        <Section title=" Utilisateurs du système" icon={Users} id="utilisateurs">
+          <div className={styles.grid}>
+            <Card className={styles.cardFull} index={18}>
               <List items={["Agent ANIP", "Chef de service", "DRH", "Direction générale", "Administrateur système", "Usager (pour feedback)"]} />
             </Card>
           </div>
         </Section>
 
-        <Section title=" Indicateurs de succès & Évolutions" icon={TrendingUp} id="succes">
+        <Section title=" Indicateurs de succès" icon={CheckCircle2} id="succes">
           <div className={styles.grid}>
-            <Card title="Indicateurs de succès" icon={CheckCircle2} className={styles.cardMedium} index={19}>
+            <Card className={styles.cardFull} index={19}>
               <List items={[
                 "Amélioration de la performance individuelle",
                 "Augmentation du taux de formation complétée",
@@ -572,7 +577,12 @@ export default function CahierDesCharges() {
                 "Progression de la satisfaction des usagers"
               ]} />
             </Card>
-            <Card title="Évolutions possibles" icon={BrainCircuit} className={styles.cardMedium} index={20}>
+          </div>
+        </Section>
+
+        <Section title=" Évolutions possibles à moyen terme" icon={BrainCircuit} id="evolutions">
+          <div className={styles.grid}>
+            <Card className={styles.cardFull} index={20}>
               <List items={[
                 "Intégration biométrique (présence / activité)",
                 "Analyse prédictive des performances",
