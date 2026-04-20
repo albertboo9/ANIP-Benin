@@ -1,18 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --color-bg: #030712;
-  --color-text-primary: #f9fafb;
-  --color-text-secondary: #9ca3af;
-  --color-primary: #3b82f6;
-  --color-primary-soft: rgba(59, 130, 246, 0.1);
-  --color-accent: #10b981;
-  --color-accent-soft: rgba(16, 185, 129, 0.1);
-  --color-border: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(17, 24, 39, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  --radius-xl: 1.5rem;
+  --color-bg: #ffffff;
+  --color-bg-soft: #f8fafc;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-primary: #2563eb;
+  --color-primary-soft: rgba(37, 99, 235, 0.1);
+  --color-accent: #059669;
+  --color-accent-soft: rgba(5, 150, 105, 0.1);
+  --color-border: #e2e8f0;
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  --radius-xl: 1rem;
 }
 
 * {
@@ -39,8 +40,8 @@ html, body {
 /* Premium Glassmorphism */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-premium);
 }

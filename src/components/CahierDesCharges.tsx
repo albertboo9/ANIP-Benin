@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { 
   Target, 
@@ -11,11 +12,7 @@ import {
   CheckCircle2, 
   TrendingUp, 
   Workflow, 
-  MessageSquare, 
-  Gamepad2,
-  LayoutDashboard,
-  ShieldAlert,
-  Zap,
+  MessageSquare,
   Gamepad2,
   LayoutDashboard,
   ShieldAlert,
@@ -31,16 +28,16 @@ const containerVariants = {
       staggerChildren: 0.1,
     },
   },
-};
+} as const;
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   },
-};
+} as const;
 
 function Section({ title, icon: Icon, children, id }: { title: string, icon: React.ElementType, children: React.ReactNode, id?: string }) {
   return (
@@ -65,7 +62,7 @@ function Card({ title, children, icon: Icon }: { title?: string, children: React
   return (
     <motion.div className={styles.card} variants={itemVariants}>
       {Icon && (
-        <div className={styles.iconWrapper} style={{ width: &apos;40px&apos;, height: &apos;40px&apos;, marginBottom: &apos;1.5rem&apos; }}>
+        <div className={styles.iconWrapper} style={{ width: "40px", height: "40px", marginBottom:"1.5rem" }}>
           <Icon size={24} />
         </div>
       )}
@@ -79,8 +76,8 @@ function List({ items }: { items: (string | { text: string, subItems?: string[] 
   return (
     <ul className={styles.list}>
       {items.map((item, idx) => {
-        const text = typeof item === &apos;string&apos; ? item : item.text;
-        const subItems = typeof item === &apos;object&apos; ? item.subItems : null;
+        const text = typeof item === 'string' ? item : item.text;
+        const subItems = typeof item === 'object' ? item.subItems : null;
         
         return (
           <motion.li key={idx} className={styles.listItem} variants={itemVariants}>
@@ -114,7 +111,6 @@ export default function CahierDesCharges() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <span className={styles.badge}>Digitalisation Documentaire</span>
             <h1 className={styles.title}>
               Mini Cahier des Charges Fonctionnel<br />
               PGI de Pilotage et Optimisation de la Performance des Agents – ANIP Bénin
@@ -240,15 +236,29 @@ export default function CahierDesCharges() {
         </Section>
 
         <Section title="4. Tableaux de bord" icon={LayoutDashboard}>
+          <motion.div className={styles.dashboardShowcase} variants={itemVariants}>
+            <div className={styles.dashboardImageWrapper}>
+              <Image
+                src="/assets/V0 PGI PERFORMANCE ANIP 0426.png"
+                alt="Dashboard PGI Performance ANIP"
+                width={900}
+                height={500}
+                className={styles.dashboardImage}
+              />
+            </div>
+            <p className={styles.dashboardCaption}>
+              Vue d&apos;ensemble du PGI - Suivi de la performance des agents en temps reel
+            </p>
+          </motion.div>
           <div className={styles.grid}>
             <Card title="Dashboard agent">
-              <List items={["Score personnel", "KPI", "Objectifs", "Recommandations", "formation (demandées, validées, en cours)"]} />
+              <List items={["Score personnel", "KPI", "Objectifs", "Recommandations", "formation (demandees, validées, en cours)"]} />
             </Card>
             <Card title="Dashboard manager/ chef de service">
-              <List items={["Performance équipe", "Alertes", "Analyse comparative", "Suivi des demandes de formation"]} />
+              <List items={["Performance equipe", "Alertes", "Analyse comparative", "Suivi des demandes de formation"]} />
             </Card>
             <Card title="Dashboard direction">
-              <List items={["Performance globale", "Indicateurs stratégiques", "Suivi des engagements"]} />
+              <List items={["Performance globale", "Indicateurs strategiques", "Suivi des engagements"]} />
             </Card>
           </div>
         </Section>
@@ -279,7 +289,7 @@ export default function CahierDesCharges() {
 
         <Section title="7. Utilisateurs du système" icon={Users}>
           <Card>
-            <div className={styles.grid} style={{ gridTemplateColumns: &apos;repeat(auto-fit, minmax(200px, 1fr))&apos; }}>
+            <div className={styles.grid} style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
               <List items={["Agent ANIP", "Chef de service", "DRH"]} />
               <List items={["Direction générale", "Administrateur système", "Usager (pour feedback)"]} />
             </div>
@@ -304,7 +314,7 @@ export default function CahierDesCharges() {
               "Intégration biométrique (présence / activité)",
               "Analyse prédictive des performances",
               "IA avancée (recommandation proactive)",
-              "Intégration avec outils gouvernementauxm Etc…"
+              "Intégration avec outils gouvernementaux Etc…"
             ]} />
           </Card>
         </Section>
