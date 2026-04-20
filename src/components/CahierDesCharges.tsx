@@ -29,21 +29,60 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.3,
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
     },
   },
 } as const;
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+  hidden: { 
+    opacity: 0, 
+    y: 40,
+    scale: 0.95,
+    filter: "blur(10px)" 
+  },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
     filter: "blur(0px)",
-    transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] },
+    transition: { 
+      duration: 0.8, 
+      ease: [0.21, 0.47, 0.32, 0.98] 
+    },
   },
 } as const;
+
+const cardHoverVariants = {
+  rest: { 
+    scale: 1,
+    y: 0,
+    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02)"
+  },
+  hover: { 
+    scale: 1.02,
+    y: -8,
+    boxShadow: "0 25px 50px -12px rgba(30, 64, 175, 0.15)",
+    transition: {
+      duration: 0.4,
+      ease: "easeOut"
+    }
+  }
+};
+
+const iconAnimation = {
+  rest: { scale: 1, rotate: 0 },
+  hover: { 
+    scale: 1.2, 
+    rotate: 5,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 10
+    }
+  }
+};
 
 const imageVariants = {
   hidden: { 
@@ -83,15 +122,56 @@ function Section({ title, icon: Icon, children, id }: { title: string, icon: Rea
 }
 
 function Card({ title, children, icon: Icon, className = "" }: { title?: string, children: React.ReactNode, icon?: React.ElementType, className?: string }) {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
   return (
-    <motion.div className={`${styles.card} ${className}`} variants={itemVariants}>
+    <motion.div 
+      className={`${styles.card} ${className}`} 
+      variants={itemVariants}
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
+      onMouseMove={handleMouseMove}
+      style={{
+        // @ts-ignore
+        "--mouse-x": `${mousePosition.x}px`,
+        "--mouse-y": `${mousePosition.y}px`,
+      }}
+    >
+      <motion.div 
+        className={styles.cardGlow}
+        variants={{
+          rest: { opacity: 0 },
+          hover: { opacity: 1 }
+        }}
+      />
       {Icon && (
-        <div className={styles.iconWrapper} style={{ width: "40px", height: "40px", marginBottom:"1.5rem" }}>
+        <motion.div 
+          className={styles.iconWrapper} 
+          style={{ width: "40px", height: "40px", marginBottom:"1.5rem" }}
+          variants={iconAnimation}
+        >
           <Icon size={24} />
-        </div>
+        </motion.div>
       )}
       {title && <h3 className={styles.subsectionTitle}>{title}</h3>}
-      {children}
+      <motion.div 
+        style={{ position: 'relative', zIndex: 1 }}
+        variants={{
+          rest: { y: 0 },
+          hover: { y: -2 }
+        }}
+      >
+        {children}
+      </motion.div>
     </motion.div>
   );
 }
