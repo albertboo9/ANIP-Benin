@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: transparent;
+    color: var(--color-text-primary, #1a1a1a);
+    padding: 0;
+  }
+
+  .diagram-wrapper {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px 14px;
+    border-bottom: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.12));
+    margin-bottom: 0;
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-image {
+    max-height: 90px;
+    max-width: 260px;
+    height: auto;
+    width: auto;
+  }
+
+  .system-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #0A2463;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+
+  .system-badge .dot {
+    width: 6px; height: 6px;
+    background: #5EE7D0;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100%{opacity:1} 50%{opacity:.4}
+  }
+
+  .diagram-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-primary, #111);
+    letter-spacing: -0.01em;
+  }
+
+  .diagram-subtitle {
+    font-size: 12px;
+    color: var(--color-text-secondary, #666);
+    margin-top: 2px;
+  }
+
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--color-text-secondary, #666);
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  .legend-line {
+    width: 22px; height: 2px;
+    border-radius: 1px;
+  }
+
+  .legend-dashed {
+    width: 22px; height: 1px;
+    border-top: 2px dashed currentColor;
+  }
+
+  .canvas-area {
+    position: relative;
+    width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ---- Actor styles ---- */
+  .actor {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .actor:hover { transform: scale(1.1); }
+
+  .actor-icon {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 2px solid rgba(255,255,255,0.5);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .actor-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.3;
+    white-space: nowrap;
+    color: var(--color-text-primary, #111);
+    background: var(--color-background-primary, #fff);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.1));
+  }
+
+  /* ---- System boundary ---- */
+  .system-boundary {
+    position: absolute;
+    border: 1.5px solid rgba(10,36,99,0.25);
+    border-radius: 20px;
+    background: var(--color-background-secondary, rgba(248,249,250,0.7));
+  }
+
+  .system-label {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: #0A2463;
+    color: #fff;
+    padding: 3px 14px;
+    border-radius: 12px;
+    white-space: nowrap;
+  }
+
+  /* ---- Module packages ---- */
+  .module {
+    position: absolute;
+    border-radius: 14px;
+    padding: 10px 12px 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.15s;
+  }
+
+  .module:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  }
+
+  /* ---- Buttons & Cursor ---- */
+  .control-btn {
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #0A2463;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+  #presentBtn {
+    background: #0A2463; 
+  }
+  #laser-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 12px; height: 12px;
+    background: #ef4444;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s;
+    transform: translate(-50%, -50%);
+  }
+  body.presenting #laser-cursor {
+    opacity: 1;
+  }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 7px;
+  }
+
+  .module-icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .module-name {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .uc-pill {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 400;
+    padding: 4px 8px;
+    border-radius: 8px;
+    margin-bottom: 3px;
+    border: 0.5px solid rgba(0,0,0,0.08);
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .uc-pill:last-child { margin-bottom: 0; }
+  .uc-pill:hover { opacity: 0.75; }
+
+  /* Color themes per module */
+  .mod-referentiel   { background: #EEF2FF; } .mod-referentiel .module-name { color: #3730A3; } .mod-referentiel .uc-pill { background: #E0E7FF; color: #312E81; }
+  .mod-performance   { background: #F0FDF4; } .mod-performance .module-name { color: #15803D; } .mod-performance .uc-pill { background: #DCFCE7; color: #14532D; }
+  .mod-evaluation    { background: #FFF7ED; } .mod-evaluation .module-name { color: #C2410C; } .mod-evaluation .uc-pill { background: #FED7AA; color: #7C2D12; }
+  .mod-analytics     { background: #EFF6FF; } .mod-analytics .module-name { color: #1D4ED8; } .mod-analytics .uc-pill { background: #DBEAFE; color: #1E3A5F; }
+  .mod-ia            { background: #FAF5FF; } .mod-ia .module-name { color: #7C3AED; } .mod-ia .uc-pill { background: #EDE9FE; color: #4C1D95; }
+  .mod-formation     { background: #FFF1F2; } .mod-formation .module-name { color: #BE123C; } .mod-formation .uc-pill { background: #FFE4E6; color: #881337; }
+  .mod-feedback      { background: #FFFBEB; } .mod-feedback .module-name { color: #B45309; } .mod-feedback .uc-pill { background: #FEF3C7; color: #78350F; }
+  .mod-collab        { background: #F0FDFA; } .mod-collab .module-name { color: #0F766E; } .mod-collab .uc-pill { background: #CCFBF1; color: #134E4A; }
+  .mod-gamif         { background: #FFF7ED; } .mod-gamif .module-name { color: #D97706; } .mod-gamif .uc-pill { background: #FDE68A; color: #78350F; }
+  .mod-dashboard     { background: #F8FAFC; } .mod-dashboard .module-name { color: #334155; } .mod-dashboard .uc-pill { background: #E2E8F0; color: #1E293B; }
+
+  /* Actor color dots */
+  .a-admin     { background: #6366F1; }
+  .a-manager   { background: #10B981; }
+  .a-agent     { background: #3B82F6; }
+  .a-drh       { background: #F59E0B; }
+  .a-direction { background: #EF4444; }
+  .a-usager    { background: #8B5CF6; }
+
+  /* Connections SVG */
+  .connections-svg {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  /* Relation labels */
+  .rel-label {
+    position: absolute;
+    font-size: 9.5px;
+    font-weight: 500;
+    color: #7C3AED;
+    background: #FAF5FF;
+    border: 0.5px solid #C4B5FD;
+    padding: 2px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* Actor participation chips */
+  .actor-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 5px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .chip-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .chip-admin     { background: #EDE9FE; color: #4C1D95; }  .chip-admin .chip-dot     { background: #6366F1; }
+  .chip-manager   { background: #DCFCE7; color: #14532D; }  .chip-manager .chip-dot   { background: #10B981; }
+  .chip-agent     { background: #DBEAFE; color: #1E3A5F; }  .chip-agent .chip-dot     { background: #3B82F6; }
+  .chip-drh       { background: #FEF3C7; color: #78350F; }  .chip-drh .chip-dot       { background: #F59E0B; }
+  .chip-direction { background: #FEE2E2; color: #7F1D1D; }  .chip-direction .chip-dot { background: #EF4444; }
+  .chip-usager    { background: #EDE9FE; color: #4C1D95; }  .chip-usager .chip-dot    { background: #8B5CF6; }
+
+  .separator-line {
+    border: none;
+    border-top: 0.5px solid rgba(0,0,0,0.08);
+    margin: 6px 0 5px;
+  }
+
+  /* Relations section */
+  .relations-section {
+    padding: 16px 24px 20px;
+    border-top: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.1));
+  }
+
+  .relations-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-secondary, #666);
+    margin-bottom: 10px;
+  }
+
+  .relations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+  }
+
+  .relation-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 0.5px solid rgba(0,0,0,0.07);
+    background: var(--color-background-secondary, #f9f9f9);
+    font-size: 11px;
+  }
+
+  .relation-arrow {
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .relation-from { color: var(--color-text-secondary, #666); flex-shrink: 0; }
+  .relation-to   { color: var(--color-text-primary, #111); font-weight: 500; flex-shrink: 0; }
+  .relation-type { 
+    margin-left: auto;
+    font-size: 9.5px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 8px;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .type-include { background: #EDE9FE; color: #6D28D9; }
+  .type-extend  { background: #DBEAFE; color: #1D4ED8; }
+
+  /* Ensure critical UC8 links are always visible */
+  .link-agent-eval, .link-man-eval { stroke-opacity: 1 !important; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header-bar">
+  <div class="header-title">
+    <img src="/assets/ANIP-Logo-HD.png" alt="ANIP Logo" class="logo-image">
+    <div>
+      <div class="diagram-title">Diagramme de cas d'utilisation</div>
+      <div class="diagram-subtitle">PGI Performance ANIP — Vue système complète</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+    <div class="system-badge"><span class="dot"></span>PGI Performance ANIP</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Agent</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>Chef de service</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#EF4444"></div>Direction</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div>DRH</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#6366F1"></div>Admin</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Usager</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main diagram area -->
+<div class="diagram-wrapper">
+  <div class="canvas-area" style="height: 930px; padding: 32px 20px;">
+
+    <!-- System boundary -->
+    <div class="system-boundary" style="left:120px;top:10px;width:760px;height:820px;">
+      <div class="system-label">PGI Performance ANIP</div>
+    </div>
+
+    <!-- ============ ACTORS (left) ============ -->
+
+    <!-- Admin -->
+    <div class="actor" style="left:28px;top:50px;" title="Admin">
+      <div class="actor-icon a-admin"><i class="fas fa-user-tie"></i></div>
+      <div class="actor-label">Admin</div>
+    </div>
+
+    <!-- Agent -->
+    <div class="actor" style="left:24px;top:200px;" title="Agent">
+      <div class="actor-icon a-agent"><i class="fas fa-user-gear"></i></div>
+      <div class="actor-label">Agent</div>
+    </div>
+
+    <!-- Chef de service -->
+    <div class="actor" style="left:8px;top:380px;" title="Chef de service">
+      <div class="actor-icon a-manager"><i class="fas fa-user-tie"></i></div>
+      <div class="actor-label" style="white-space:normal;text-align:center;max-width:60px">Chef de service</div>
+    </div>
+
+    <!-- DRH -->
+    <div class="actor" style="left:28px;top:560px;" title="DRH">
+      <div class="actor-icon a-drh"><i class="fas fa-user-tie"></i></div>
+      <div class="actor-label">DRH</div>
+    </div>
+
+    <!-- Direction -->
+    <div class="actor" style="left:24px;top:680px;" title="Direction">
+      <div class="actor-icon a-direction"><i class="fas fa-user-tie"></i></div>
+      <div class="actor-label">Direction</div>
+    </div>
+
+    <!-- Usager (right) -->
+    <div class="actor" style="right:-40px;top:550px;" title="Usager">
+      <div class="actor-icon a-usager"><i class="fas fa-user"></i></div>
+      <div class="actor-label">Usager</div>
+    </div>
+
+    <!-- ============ MODULE BLOCKS ============ -->
+
+    <!-- ROW 1: Referentiel | Performance | Evaluation -->
+    <div class="module mod-referentiel" style="left:138px;top:38px;width:220px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-folder"></i></span>
+        <span class="module-name">Référentiel</span>
+      </div>
+      <span class="uc-pill">UC1 — Définir référentiel métiers</span>
+      <span class="uc-pill">UC2 — Valider référentiel métiers</span>
+      <span class="uc-pill">UC3 — Gérer profils agents</span>
+      <span class="uc-pill">UC4 — Associer compétences aux postes</span>
+      <span class="uc-pill">UC5 — Paramétrer référentiel dans le système</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-drh"><span class="chip-dot"></span>DRH</span>
+        <span class="chip chip-direction"><span class="chip-dot"></span>Direction</span>
+        <span class="chip chip-manager"><span class="chip-dot"></span>Chef service</span>
+        <span class="chip chip-admin"><span class="chip-dot"></span>Admin</span>
+      </div>
+    </div>
+
+    <div class="module mod-performance" style="left:385px;top:38px;width:205px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-chart-bar"></i></span>
+        <span class="module-name">Pilotage Performance</span>
+      </div>
+      <span class="uc-pill">UC6 — Définir OKR / KPI</span>
+      <span class="uc-pill">UC7 — Suivre performance</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-manager"><span class="chip-dot"></span>Chef service</span>
+        <span class="chip chip-direction"><span class="chip-dot"></span>Direction</span>
+        <span class="chip chip-agent"><span class="chip-dot"></span>Agent</span>
+      </div>
+    </div>
+
+    <div class="module mod-evaluation" style="left:617px;top:38px;width:185px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-clipboard-check"></i></span>
+        <span class="module-name">Évaluation Continue</span>
+      </div>
+      <span class="uc-pill">UC8 — Évaluer performances</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-agent"><span class="chip-dot"></span>Agent</span>
+        <span class="chip chip-manager"><span class="chip-dot"></span>Chef service</span>
+      </div>
+    </div>
+
+    <!-- ROW 2: Scoring | IA | Formation -->
+    <div class="module mod-analytics" style="left:138px;top:280px;width:190px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-chart-line"></i></span>
+        <span class="module-name">Scoring & Analytics</span>
+      </div>
+      <span class="uc-pill">UC9 — Calculer score</span>
+      <span class="uc-pill">UC10 — Analyser performances</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-manager"><span class="chip-dot"></span>Chef service</span>
+        <span class="chip chip-direction"><span class="chip-dot"></span>Direction</span>
+      </div>
+    </div>
+
+    <div class="module mod-ia" style="left:355px;top:280px;width:205px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-brain"></i></span>
+        <span class="module-name">IA & Coaching</span>
+      </div>
+      <span class="uc-pill">UC11 — Recevoir recommandations</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-agent"><span class="chip-dot"></span>Agent</span>
+      </div>
+    </div>
+
+    <div class="module mod-formation" style="left:585px;top:280px;width:185px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-graduation-cap"></i></span>
+        <span class="module-name">Formation (LMS)</span>
+      </div>
+      <span class="uc-pill">UC12 — Suivre formation</span>
+      <span class="uc-pill">UC13 — Gérer demandes formation</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-agent"><span class="chip-dot"></span>Agent</span>
+        <span class="chip chip-drh"><span class="chip-dot"></span>DRH</span>
+        <span class="chip chip-manager"><span class="chip-dot"></span>Chef service</span>
+      </div>
+    </div>
+
+    <!-- ROW 3: Feedback | Collaboration | Gamification -->
+    <div class="module mod-feedback" style="left:138px;top:480px;width:190px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-comments"></i></span>
+        <span class="module-name">Feedback 360°</span>
+      </div>
+      <span class="uc-pill">UC14 — Donner feedback</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-agent"><span class="chip-dot"></span>Agent</span>
+        <span class="chip chip-manager"><span class="chip-dot"></span>Chef service</span>
+        <span class="chip chip-usager"><span class="chip-dot"></span>Usager</span>
+      </div>
+    </div>
+
+    <div class="module mod-collab" style="left:355px;top:480px;width:205px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-users"></i></span>
+        <span class="module-name">Collaboration</span>
+      </div>
+      <span class="uc-pill">UC15 — Collaborer / Communiquer</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-agent"><span class="chip-dot"></span>Agent</span>
+        <span class="chip chip-manager"><span class="chip-dot"></span>Chef service</span>
+      </div>
+    </div>
+
+    <div class="module mod-gamif" style="left:585px;top:480px;width:185px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-trophy"></i></span>
+        <span class="module-name">Gamification</span>
+      </div>
+      <span class="uc-pill">UC16 — Classement & badges</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-agent"><span class="chip-dot"></span>Agent</span>
+      </div>
+    </div>
+
+    <!-- ROW 4: Dashboard (centered, full width) -->
+    <div class="module mod-dashboard" style="left:138px;top:645px;width:632px;">
+      <div class="module-header">
+        <span class="module-icon"><i class="fas fa-desktop"></i></span>
+        <span class="module-name">Tableaux de bord</span>
+      </div>
+      <span class="uc-pill" style="display:inline-block">UC17 — Consulter dashboards</span>
+      <hr class="separator-line">
+      <div class="actor-chips">
+        <span class="chip chip-agent"><span class="chip-dot"></span>Agent</span>
+        <span class="chip chip-manager"><span class="chip-dot"></span>Chef de service</span>
+        <span class="chip chip-direction"><span class="chip-dot"></span>Direction</span>
+      </div>
+    </div>
+
+    <!-- ============ SVG CONNECTIONS ============ -->
+    <!-- Internal relations: UC5->UC6 (include), UC6->UC7 (include), UC7->UC8 (extend), UC8->UC9 (extend) -->
+    <svg class="connections-svg" style="width:940px;height:930px;" viewBox="0 0 940 930">
+      <defs>
+        <marker id="arr-inc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-ext" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#1D4ED8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-actor" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- ACTOR CONNECTIONS (subtle gray) -->
+      <!-- DRH -> UC1 -->
+      <line class="actor-link link-drh-ref1" x1="68" y1="582" x2="150" y2="82" stroke="#F59E0B" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Direction -> UC2 -->
+      <line class="actor-link link-dir-ref2" x1="68" y1="700" x2="150" y2="93" stroke="#EF4444" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- DRH -> UC3 -->
+      <line class="actor-link link-drh-ref3" x1="68" y1="582" x2="150" y2="104" stroke="#F59E0B" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Manager -> UC3 -->
+      <line class="actor-link link-man-ref3" x1="58" y1="400" x2="150" y2="104" stroke="#10B981" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- DRH -> UC4 -->
+      <line class="actor-link link-drh-ref4" x1="68" y1="582" x2="150" y2="115" stroke="#F59E0B" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Admin -> UC5 -->
+      <line class="actor-link link-admin-ref" x1="70" y1="72" x2="150" y2="126" stroke="#6366F1" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+
+      <!-- Agent -> Performance UC7 -->
+      <line class="actor-link link-agent-perf" x1="68" y1="222" x2="397" y2="93" stroke="#3B82F6" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Agent -> IA UC11 -->
+      <line class="actor-link link-agent-ia" x1="68" y1="222" x2="367" y2="324" stroke="#3B82F6" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Agent -> Formation UC12 -->
+      <line class="actor-link link-agent-form" x1="68" y1="222" x2="597" y2="324" stroke="#3B82F6" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Agent -> Feedback UC14 -->
+      <line class="actor-link link-agent-feed" x1="68" y1="222" x2="150" y2="524" stroke="#3B82F6" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Agent -> Collab UC15 -->
+      <line class="actor-link link-agent-collab" x1="68" y1="222" x2="367" y2="524" stroke="#3B82F6" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Agent -> Gamif UC16 -->
+      <line class="actor-link link-agent-gamif" x1="68" y1="222" x2="597" y2="524" stroke="#3B82F6" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Agent -> Dashboard UC17 -->
+      <line class="actor-link link-agent-dash" x1="68" y1="222" x2="150" y2="689" stroke="#3B82F6" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+
+      <!-- Manager -> Performance UC6 -->
+      <line class="actor-link link-man-perf" x1="58" y1="400" x2="397" y2="82" stroke="#10B981" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Manager -> Analytics UC10 -->
+      <line class="actor-link link-man-ana" x1="58" y1="400" x2="150" y2="335" stroke="#10B981" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Manager -> Formation UC13 -->
+      <line class="actor-link link-man-form" x1="58" y1="400" x2="597" y2="335" stroke="#10B981" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Manager -> Feedback UC14 -->
+      <line class="actor-link link-man-feed" x1="58" y1="400" x2="150" y2="524" stroke="#10B981" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Manager -> Collab UC15 -->
+      <line class="actor-link link-man-collab" x1="58" y1="400" x2="367" y2="524" stroke="#10B981" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Manager -> Dashboard UC17 -->
+      <line class="actor-link link-man-dash" x1="58" y1="400" x2="150" y2="689" stroke="#10B981" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Direction -> Performance UC6 -->
+      <line class="actor-link link-dir-perf" x1="68" y1="700" x2="397" y2="82" stroke="#EF4444" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Direction -> Performance UC7 -->
+      <line class="actor-link link-dir-perf7" x1="68" y1="700" x2="397" y2="93" stroke="#EF4444" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Direction -> Analytics UC10 -->
+      <line class="actor-link link-dir-ana" x1="68" y1="700" x2="150" y2="335" stroke="#EF4444" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- Direction -> Dashboard UC17 -->
+      <line class="actor-link link-dir-dash" x1="68" y1="700" x2="150" y2="689" stroke="#EF4444" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+
+      <!-- DRH -> Formation UC12 -->
+      <line class="actor-link link-drh-form" x1="68" y1="582" x2="597" y2="324" stroke="#F59E0B" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+      <!-- DRH -> Formation UC13 -->
+      <line class="actor-link link-drh-form" x1="68" y1="582" x2="597" y2="335" stroke="#F59E0B" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+
+      <!-- Usager -> Feedback UC14 -->
+      <line class="actor-link link-usa-feed" x1="890" y1="572" x2="150" y2="524" stroke="#8B5CF6" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arr-actor)"/>
+
+      <!-- ============ CRITICAL UC8 CONNECTIONS (RENDERED LAST FOR VISIBILITY) ============ -->
+      <!-- Agent -> Evaluation UC8 (targeting UC8 pill at top of evaluation module) -->
+      <line class="actor-link link-agent-eval" x1="68" y1="222" x2="677" y2="72" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#arr-actor)"/>
+      <!-- Manager -> Evaluation UC8 -->
+      <line class="actor-link link-man-eval" x1="58" y1="400" x2="677" y2="72" stroke="#10B981" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#arr-actor)"/>
+
+      <!-- ============ INTERNAL RELATIONS ============ -->
+      <!-- UC8 -> UC9: include (Evaluation -> Scoring) vertical -->
+     
+    </svg>
+
+    <!-- Relation labels -->
+    <div class="rel-label" style="left:386px;top:544px;transform:translateX(-50%)">«include»</div>
+    <div class="rel-label" style="left:222px;top:341px;">«include»</div>
+    <div class="rel-label" style="left:330px;top:437px;">«extend»</div>
+    <div class="rel-label" style="left:555px;top:424px;">«extend»</div>
+
+  </div><!-- end <!-- Story Panel -->
+<div id="story-panel" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 600px; padding: 18px 26px; background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); text-align: center; font-family: 'DM Sans', sans-serif; z-index: 50; display: none;">
+  <div style="font-size: 11px; font-weight: 700; color: #6366F1; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;" id="story-step-title">PROCESSUS</div>
+  <div style="font-size: 14px; font-weight: 500; color: #1e293b; line-height: 1.4;" id="story-step-desc">...</div>
+</div>
+
+<!-- Laser Cursor -->
+<div id="laser-cursor"></div>
+
+<!-- Control Buttons -->
+<div style="position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 100;">
+  <button id="replayBtn" class="control-btn"><i class="fas fa-redo-alt" style="margin-right: 6px;"></i>Rejouer Mode Auto</button>
+  <button id="presentBtn" class="control-btn"><i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation (Pas-à-pas)</button>
+</div>
+
+<script id="gsap-master-timeline">
+// Dictionnaire du Storytelling (Conforme au Cahier des Charges)
+const stories = [
+  { title: "DÉPLOIEMENT DU PGI", desc: "Le progiciel de pilotage de la performance s'instancie dans l'écosystème ANIP." }, // 0
+  { title: "ÉTAPE 1 : GESTION DES PROFILS ET RÉFÉRENTIELS (3.1)", desc: "L'Administrateur bâtit le socle. Il crée les profils métiers et mappe les compétences attendues pour chaque agent de l'ANIP." }, // 1
+  { title: "ÉTAPE 2 : OBJECTIFS OKR ET KPI (3.2)", desc: "La Direction Globale fixe les OKR stratégiques. Les Chefs déploient ensuite les KPI quotidiens adaptés pour chaque agent." }, // 2
+  { title: "ÉTAPE 3 : ÉVALUATION CONTINUE (3.3)", desc: "C'est l'agent qui déclenche l'action. Sa performance quotidienne est évaluée en temps réel selon les OKR préalablement établis." }, // 3
+  { title: "ÉTAPE 4 : MOTEUR DE SCORING ET ANALYTICS (3.4)", desc: "L'évaluation est instantanément traduite en Score dynamique (ranking). Les données alimentent le module Analytics pour détecter anomalies et progressions." }, // 4
+  { title: "ÉTAPE 5 : IA ET COACHING INTELLIGENT (3.5)", desc: "L'Intelligence Artificielle ingère les données Analytics pour détecter les lacunes et offrir un coaching quotidien directement à l'Agent." }, // 5
+  { title: "ÉTAPE 6 : FORMATION SUR-MESURE LMS (3.6 & 3.7)", desc: "Directement recommandée par l'IA ou demandée, une formation d'upskilling est assignée à l'agent, sous le contrôle du Chef et validation DRH." }, // 6
+  { title: "ÉTAPE 7 : ÉCOSYSTÈME 360° (3.8 à 3.10)", desc: "Gamification, Espaces collaboratifs, et Feedback multi-acteurs (Supérieurs, Pairs, Usagers) complètent le système pour garantir l'engagement profond de chaque acteur." }, // 7
+  { title: "ÉTAPE 8 : PILOTAGE GLOBAL (4.0)", desc: "L'ensemble du système alimente les Dashboards pour une visibilité totale de la Performance à l'échelle de l'Agent, du Chef et de la Direction." }, // 8
+  { title: "BOUCLE VERTUEUSE COMPLÈTE", desc: "Le système tourne : un cycle d'amélioration continue fluide, automatisé, et temps réel pour la performance de l'ANIP !" } // 9
+];
+
+function updateStoryUI(stepIndex) {
+  if(!stories[stepIndex]) return;
+  const panel = document.getElementById("story-panel");
+  panel.style.display = "block";
+  const t = document.getElementById("story-step-title");
+  const d = document.getElementById("story-step-desc");
+  
+  gsap.killTweensOf(panel);
+  gsap.to(panel, { opacity: 0, duration: 0.15, y: 5, onComplete: () => {
+    t.innerText = stories[stepIndex].title;
+    d.innerHTML = stories[stepIndex].desc;
+    gsap.to(panel, { opacity: 1, duration: 0.4, y: 0 });
+  }});
+}
+
+// ----------------------------------------------------------------------------------
+// PRÉPARATION DE LA TIMELINE GSAP
+// ----------------------------------------------------------------------------------
+const tl = gsap.timeline({ paused: true });
+
+// SET STATES
+gsap.set(".uc-pill, .separator-line, .actor-chips, .actor-link, .flow, .rel-label", { opacity: 0 });
+gsap.set(".link-agent-eval, .link-man-eval", { opacity: 1 }); // Agent and Manager to UC8 links visible from start
+gsap.set(".uc-pill", { y: 10 });
+gsap.set(".system-boundary", { opacity: 0, scale: 0.98 });
+gsap.set(".actor", { opacity: 0, x: -30 });
+gsap.set(".module", { opacity: 0, y: 20 });
+gsap.set(".flow", { strokeDasharray: 400, strokeDashoffset: 400 }); // reset all svg flows
+
+// ----------------------------------------------------------------------------------
+// TIMELINE EVENTS 
+// Nous omettons les tl.call() pour éviter les conflits au Scrubbing. L'UI est managée par les clics.
+// On rajoute de très courts délais pour aider le Auto Play
+// ----------------------------------------------------------------------------------
+
+// ETAPE 0 : INITIALISATION DE L'ENVIRONNEMENT
+tl.addLabel("step0");
+tl.to(".system-boundary", { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" });
+tl.to(".actor", { opacity: 1, x: 0, stagger: 0.1, duration: 0.5 }, "-=0.2");
+tl.to(".module", { opacity: 1, y: 0, stagger: 0.1, duration: 0.5 }, "-=0.2");
+
+// ETAPE 1 : PARAMÉTRAGE SYSTÈME (ADMIN)
+tl.addLabel("step1", "+=0.3");
+tl.to(".link-admin-ref", { opacity: 0.6, duration: 0.4 });
+tl.to(".link-drh-ref1, .link-dir-ref2, .link-drh-ref3, .link-man-ref3, .link-drh-ref4", { opacity: 0.5, duration: 0.4 });
+tl.to(".mod-referentiel .uc-pill", { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 });
+tl.to(".mod-referentiel .separator-line, .mod-referentiel .actor-chips", { opacity: 1, duration: 0.3 });
+
+// ETAPE 2 : OKR ET KPI (DIRECTION/CHEF)
+tl.addLabel("step2", "+=0.3");
+tl.to(".link-dir-perf, .link-man-perf", { opacity: 0.5, duration: 0.4 });
+tl.to(".mod-performance .uc-pill", { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 });
+tl.to(".mod-performance .separator-line, .mod-performance .actor-chips", { opacity: 1, duration: 0.3 });
+
+// ETAPE 3 : L'AGENT AU CENTRE (ÉVALUATION)
+tl.addLabel("step3", "+=0.3");
+tl.to(".link-agent-perf", { opacity: 0.5, duration: 0.4 });
+tl.to(".link-agent-eval, .link-man-eval", { opacity: 1, duration: 0.4 }, "-=0.2");
+tl.to(".mod-evaluation .uc-pill", { opacity: 1, y: 0, duration: 0.4 });
+tl.to(".mod-evaluation .separator-line, .mod-evaluation .actor-chips", { opacity: 1, duration: 0.3 });
+
+// ETAPE 4 : FLUX MÉTIER -> SCORING & ANALYTICS
+tl.addLabel("step4", "+=0.3");
+tl.to(".flow-eval-score", { opacity: 0.85, duration: 0.1 });
+tl.to(".flow-eval-score", { strokeDashoffset: 0, duration: 0.8 });
+tl.to(".mod-analytics", { boxShadow: "0 0 0 2px rgba(59,130,246,0.5)", y: -2, duration: 0.3 });
+tl.to(".mod-analytics .uc-pill:nth-of-type(1)", { opacity: 1, y: 0, duration: 0.3 });
+tl.to(".rel-label:nth-of-type(1)", {opacity: 1, duration: 0.2});
+
+tl.to(".flow-score-analytics", { opacity: 0.85, duration: 0.1 });
+tl.to(".flow-score-analytics", { strokeDashoffset: 0, duration: 0.6 });
+tl.to(".mod-analytics .uc-pill:nth-of-type(2)", { opacity: 1, y: 0, duration: 0.3 });
+tl.to(".link-dir-ana, .link-man-ana", { opacity: 0.5, duration: 0.4 });
+tl.to(".rel-label:nth-of-type(2)", {opacity: 1, duration: 0.2});
+tl.to(".mod-analytics .separator-line, .mod-analytics .actor-chips", { opacity: 1, duration: 0.3 });
+
+// ETAPE 5 : INTELLIGENCE ARTIFICIELLE
+tl.addLabel("step5", "+=0.3");
+tl.to(".flow-analytics-ia", { opacity: 0.85, duration: 0.1 });
+tl.to(".flow-analytics-ia", { strokeDashoffset: 0, duration: 0.8 });
+tl.to(".rel-label:nth-of-type(3)", {opacity: 1, duration: 0.2});
+
+tl.to(".mod-ia", { boxShadow: "0 0 0 2px rgba(124,58,237,0.5)", y: -2, duration: 0.3 });
+tl.to(".mod-ia .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
+tl.to(".link-agent-ia", { opacity: 0.5, duration: 0.4 });
+tl.to(".mod-ia .separator-line, .mod-ia .actor-chips", { opacity: 1, duration: 0.3 });
+
+// ETAPE 6 : FORMATION & LMS
+tl.addLabel("step6", "+=0.3");
+tl.to(".flow-ia-formation", { opacity: 0.85, duration: 0.1 });
+tl.to(".flow-ia-formation", { strokeDashoffset: 0, duration: 0.8 });
+tl.to(".mod-formation", { boxShadow: "0 0 0 2px rgba(190,18,60,0.5)", y: -2, duration: 0.3 });
+tl.to(".rel-label:nth-of-type(4)", {opacity: 1, duration: 0.2});
+
+tl.to(".mod-formation .uc-pill", { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 });
+tl.to(".link-agent-form, .link-man-form, .link-drh-form", { opacity: 0.5, duration: 0.4 });
+tl.to(".mod-formation .separator-line, .mod-formation .actor-chips", { opacity: 1, duration: 0.3 });
+
+// ETAPE 7 : ÉCOSYSTÈME 360 & ENGAGEMENT
+tl.addLabel("step7", "+=0.3");
+tl.to(".link-agent-feed, .link-man-feed, .link-usa-feed", { opacity: 0.5, duration: 0.3 });
+tl.to(".link-agent-eval, .link-man-eval", { opacity: 1, duration: 0.3 }, "-=0.1");
+tl.to(".mod-feedback .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
+tl.to(".mod-feedback .separator-line, .mod-feedback .actor-chips", { opacity: 1, duration: 0.2 });
+
+tl.to(".link-agent-collab", { opacity: 0.5, duration: 0.3 }, "-=0.1");
+tl.to(".mod-collab .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
+tl.to(".mod-collab .separator-line, .mod-collab .actor-chips", { opacity: 1, duration: 0.2 });
+
+tl.to(".link-agent-gamif", { opacity: 0.5, duration: 0.3 }, "-=0.1");
+tl.to(".mod-gamif .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
+tl.to(".mod-gamif .separator-line, .mod-gamif .actor-chips", { opacity: 1, duration: 0.2 });
+
+// ETAPE 8 : SYNTHÈSE GLOBALE (DASHBOARDS)
+tl.addLabel("step8", "+=0.3");
+tl.to(".link-agent-dash, .link-man-dash, .link-dir-dash", { opacity: 0.5, duration: 0.4 });
+tl.to(".link-agent-eval, .link-man-eval", { opacity: 1, duration: 0.3 }, "-=0.1");
+tl.to(".mod-dashboard .uc-pill", { opacity: 1, y: 0, duration: 0.4 });
+tl.to(".mod-dashboard .separator-line, .mod-dashboard .actor-chips", { opacity: 1, duration: 0.3 });
+
+// ETAPE 9 : MAIN LOOP ANIMATION
+tl.addLabel("step9", "+=0.3");
+tl.to(".flow-eval-score, .flow-score-analytics, .flow-analytics-ia, .flow-ia-formation", {
+  strokeDashoffset: -400,
+  duration: 2.5,
+  repeat: -1,
+  ease: "none"
+});
+
+// ----------------------------------------------------------------------------------
+// LOGIQUE UI ET INTERACTIVITÉ "PRÉSENTATION PAS-A-PAS"
+// ----------------------------------------------------------------------------------
+let currentStep = -1;
+let isPresenting = false;
+let maxSteps = 9;
+
+function playAutoMode() {
+  isPresenting = false;
+  document.body.classList.remove("presenting");
+  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation (Pas-à-pas)';
+  document.getElementById("presentBtn").style.background = "#0A2463";
+  document.getElementById("story-panel").style.display = "none";
+  gsap.set(".mod-analytics, .mod-ia, .mod-formation", { clearProps: "boxShadow,y" });
+  
+  tl.restart(); // Lit toute la timeline automatiquement sans pause !
+}
+
+// Lancement par défaut en mode AUTO
+playAutoMode();
+
+document.getElementById("replayBtn").onclick = (e) => {
+  e.stopPropagation();
+  playAutoMode();
+};
+
+document.getElementById("presentBtn").onclick = (e) => {
+  e.stopPropagation();
+  isPresenting = true;
+  document.body.classList.add("presenting");
+  
+  // RESET COMPLET pour mode manuel
+  tl.pause();
+  tl.progress(0); 
+  gsap.set(".mod-analytics, .mod-ia, .mod-formation", { clearProps: "boxShadow,y" });
+  
+  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-hand-pointer" style="margin-right: 6px;"></i>Cliquer (n\'importe où) pour continuer';
+  document.getElementById("presentBtn").style.background = "#10B981"; // Active Green
+  
+  currentStep = 0;
+  updateStoryUI(currentStep); // Affiche le panel de l'étape 0
+  tl.tweenTo("step0"); // Joue l'initialisation et s'arrête
+};
+
+document.addEventListener("click", (e) => {
+  if (isPresenting && !e.target.closest('.control-btn')) {
+    
+    // Empêcher de double-cliquer pendant qu'une étape d'animation se joue
+    if (tl.isActive()) {
+      return;
+    }
+    
+    if (currentStep < maxSteps) {
+      currentStep++;
+      updateStoryUI(currentStep); // Mise à jour asynchrone du texte
+      tl.tweenTo("step" + currentStep); // On passe à l'étape suivante et ça se met en pause automatiquement
+    } else {
+      // Fin de la présentation -> bascule sur la boucle infinie
+      playAutoMode();
+    }
+  }
+});
+
+/* Laser pointer (Guide rouge en mode présentation) */
+document.addEventListener("mousemove", (e) => {
+  if(isPresenting) {
+    gsap.to("#laser-cursor", {
+      x: e.clientX,
+      y: e.clientY,
+      duration: 0.15,
+      ease: "power2.out"
+    });
+  }
+});
+</script>
+
+</body>
+</html>
+</script>
+
+</body>
+</html>
