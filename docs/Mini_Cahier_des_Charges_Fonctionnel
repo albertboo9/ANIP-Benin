@@ -1,0 +1,175 @@
+            Mini Cahier des Charges Fonctionnel
+PGI de Pilotage et Optimisation de la Performance des Agents – ANIP Bénin
+
+
+
+1. Contexte et objectifs
+L’ANIP souhaite se doter d’un progiciel de gestion intégré (PGI) permettant de :
+Suivre et améliorer la performance des agents en temps réel
+Structurer l’évaluation quotidienne des agents
+Identifier automatiquement les écarts de performance
+Proposer des actions correctives (coaching, formation, feedback)
+Développer les compétences via un système intelligent d’upskilling
+
+2. Objectifs fonctionnels principaux
+Le PGI doit permettre de :
+Définir et piloter les OKR (Objectives & Key Results)
+Suivre les KPI métiers par agent
+Évaluer les performances quotidiennement et en temps réel
+Générer un scoring dynamique des agents
+Identifier les écarts de performance vs objectifs
+Proposer des recommandations intelligentes (IA)
+Intégrer un système de formation continue (LMS)
+Favoriser la collaboration et le feedback 360°
+Mettre en place un système de gamification pour motiver
+
+3. Périmètre fonctionnel
+3.1 Gestion des profils et référentiel métiers
+Création des profils agents :
+Identité
+Fonction / métier
+Service / direction
+Rôle et responsabilités
+Référentiel métiers :
+  Définition des compétences attendues
+Mapping compétences ↔ postes
+
+3.2 Module OKR & KPI
+Définition des objectifs :
+ Objectifs stratégiques (organisation)
+Objectifs opérationnels (service)
+Objectifs individuels (agent)
+Définition des KPI associés :
+     Quantitatifs (ex : nombre de dossiers traités)
+Qualitatifs (ex : satisfaction usagers, taux de validation des dossiers )
+Suivi en temps réel :
+     Tableau de bord dynamique
+Visualisation des écarts
+
+3.3 Module d’évaluation continue (quotidienne)
+Saisie automatique et/ou manuelle des performances
+Évaluation journalière basée sur :
+KPI
+Tâches réalisées
+Qualité du travail
+Historisation des performances
+Alertes en cas de sous-performance
+
+3.4 Module de scoring et analytics
+Calcul automatique d’un score de performance global
+Pondération par :
+   KPI
+Importance des tâches
+Priorités stratégiques
+Classement des agents (ranking)
+Analyse :
+    Progression
+Tendances
+Détection des anomalies
+
+3.5 Module IA – Coaching & recommandations
+Assistant intelligent (chat + suggestion + appel)
+Fonctionnalités :
+Analyse des performances individuelles
+Identification des lacunes
+Recommandations personnalisées :
+Actions correctives
+Conseils pratiques
+Boîte de dialogue interactive :
+Coaching quotidien
+Motivation et encouragement
+Aide à la priorisation
+
+3.6 Module LMS (formation en ligne)
+Catalogue de formations :
+Internes
+Externes
+Recommandation automatique de formations selon :
+Faiblesses détectées
+Objectifs à atteindre
+Suivi :
+Parcours de formation
+Taux de complétion
+Résultats
+Évaluations post-formation
+
+3.7 Workflow de gestion des formations
+Demande de formation par agent
+Validation hiérarchique
+Suivi du plan de formation
+Engagement et suivi des résultats
+Historique des formations suivies
+
+3.8 Module de feedback 360°
+Feedback multi-acteurs :
+Supérieurs hiérarchiques
+Collègues (pairs)
+Usagers
+Système de notation + commentaires
+Intégration dans le scoring global
+
+3.9 Module collaboratif
+Messagerie interne
+Espaces de travail par équipe/ service 
+Partage de documents
+Gestion de projets simples
+
+3.10 Module de gamification
+Système de points et badges pour stimuler les agents 
+Classements?
+Défis et objectifs collectifs
+Récompenses symboliques
+
+4. Tableaux de bord
+Dashboard agent :
+Score personnel
+KPI
+Objectifs
+Recommandations
+formation (demandées, validées, en cours)
+Dashboard manager/ chef de service  :
+Performance équipe
+Alertes
+Analyse comparative
+Suivi des demandes de formation
+
+Dashboard direction :
+Performance globale
+Indicateurs stratégiques
+Suivi des engagements 
+
+5. Exigences fonctionnelles clés
+Mise à jour des données en temps réel
+Système de recommandation intelligent (IA)
+Personnalisation selon le  métier de l’utilisateur 
+Accessibilité web et mobile
+Interface simple , ergonomique et intuitive
+
+6. Autres points clés du projet 
+Sécurité des données 
+Haute disponibilité du progiciel 
+Scalabilité (nombre d’agents élevé)
+Interopérabilité avec systèmes existants ANIP à prévoir 
+Traçabilité des actions
+
+7.  Utilisateurs  du système
+Agent ANIP 
+Chef de service
+DRH
+Direction générale
+Administrateur système
+Usager (pour feedback)
+
+8. Indicateurs de succès du projet
+Amélioration de la performance individuelle
+Augmentation du taux de formation complétée
+Réduction des écarts de performance
+Engagement des agents (usage plateforme)
+Progression de la satisfaction des usagers 
+
+9. Évolutions possibles à moyen terme 
+Intégration biométrique (présence / activité)
+Analyse prédictive des performances
+IA avancée (recommandation proactive)
+Intégration avec outils gouvernementauxm
+Etc…

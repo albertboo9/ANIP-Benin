@@ -1,0 +1,130 @@
+@startuml
+!pragma layout smetana
+top to bottom direction
+skinparam packageStyle rectangle
+
+'==================== ACTEURS ====================
+
+actor Agent
+actor "Chef de service" as Manager
+actor DRH
+actor Direction
+actor Admin
+actor Usager
+
+'==================== SYSTEM ====================
+
+rectangle "PGI Performance ANIP" {
+
+  '--- Bloc Référentiel ---
+  package "Référentiel" {
+    usecase "Définir référentiel métiers" as UC1
+    usecase "Valider référentiel métiers" as UC2
+    usecase "Gérer profils agents" as UC3
+    usecase "Associer compétences aux postes" as UC4
+    usecase "Paramétrer référentiel dans le système" as UC5
+  }
+
+  '--- Bloc Performance ---
+  package "Pilotage Performance" {
+    usecase "Définir OKR / KPI" as UC6
+    usecase "Suivre performance" as UC7
+  }
+
+   '--- Bloc Évaluation ---
+   usecase "Évaluer performances" as UC8
+
+  '--- Bloc Analytics ---
+  package "Scoring & Analytics" {
+    usecase "Calculer score" as UC9
+    usecase "Analyser performances" as UC10
+  }
+
+  '--- Bloc IA ---
+  package "IA & Coaching" {
+    usecase "Recevoir recommandations" as UC11
+  }
+
+  '--- Bloc Formation ---
+  package "Formation (LMS)" {
+    usecase "Suivre formation" as UC12
+    usecase "Gérer demandes formation" as UC13
+  }
+
+  '--- Bloc Feedback ---
+  package "Feedback 360°" {
+    usecase "Donner feedback" as UC14
+  }
+
+  '--- Bloc Collaboration ---
+  package "Collaboration" {
+    usecase "Collaborer / Communiquer" as UC15
+  }
+
+  '--- Bloc Gamification ---
+  package "Gamification" {
+    usecase "Consulter classement & badges" as UC16
+  }
+
+  '--- Bloc Dashboard ---
+  package "Tableaux de bord" {
+    usecase "Consulter dashboards" as UC17
+  }
+}
+
+'==================== RELATIONS ACTEURS ====================
+
+DRH --> UC1
+
+Direction --> UC2
+
+DRH --> UC3
+Manager --> UC3
+
+DRH --> UC4
+
+Admin --> UC5
+
+Manager --> UC6
+Direction --> UC6
+
+Agent --> UC7
+Manager --> UC7
+Direction --> UC7
+
+Agent --> UC8
+Manager --> UC8
+
+Manager --> UC10
+Direction --> UC10
+
+Agent --> UC11
+
+Agent --> UC12
+DRH --> UC12
+
+Agent --> UC13
+Manager --> UC13
+DRH --> UC13
+
+Agent --> UC14
+Manager --> UC14
+Usager --> UC14
+
+Agent --> UC15
+Manager --> UC15
+
+Agent --> UC16
+
+Agent --> UC17
+Manager --> UC17
+Direction --> UC17
+
+'==================== RELATIONS INTERNES ====================
+
+UC8 --> UC9 : <<include>>
+UC9 --> UC10 : <<include>>
+UC10 --> UC11 : <<extend>>
+UC11 --> UC12 : <<extend>>
+
+@enduml
