@@ -400,8 +400,8 @@
   .type-include { background: #EDE9FE; color: #6D28D9; }
   .type-extend  { background: #DBEAFE; color: #1D4ED8; }
 
-  /* Ensure critical UC8 links are always visible */
-  .link-agent-eval, .link-man-eval { stroke-opacity: 1 !important; }
+  /* UC8 links (initially hidden) */
+  .link-agent-eval, .link-man-eval { stroke-opacity: 0 !important; opacity: 0; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
@@ -704,16 +704,16 @@
 
       <!-- ============ INTERNAL RELATIONS (PATHS) ============ -->
       <!-- UC8 (Eval) -> UC9 (Score) -->
-      <path class="flow flow-eval-score" d="M 700 135 L 700 240 L 230 240 L 230 280" fill="none" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr-inc)"/>
+      <path class="flow flow-eval-score" d="M 700 135 L 700 240 L 230 240 L 230 275" fill="none" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr-inc)"/>
       
       <!-- UC9 (Score) -> UC10 (Analytics) -->
-      <path class="flow flow-score-analytics" d="M 230 330 L 230 360 L 230 365" fill="none" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arr-inc)"/>
+      <path class="flow flow-score-analytics" d="M 233 335 L 233 355" fill="none" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arr-inc)"/>
       
       <!-- UC10 (Analytics) -> UC11 (IA) -->
-      <path class="flow flow-analytics-ia" d="M 328 320 L 355 320" fill="none" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr-ext)"/>
+      <path class="flow flow-analytics-ia" d="M 328 320 L 350 320" fill="none" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr-ext)"/>
       
       <!-- UC11 (IA) -> UC12 (Formation) -->
-      <path class="flow flow-ia-formation" d="M 560 320 L 585 320" fill="none" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arr-ext)"/>
+      <path class="flow flow-ia-formation" d="M 560 320 L 580 320" fill="none" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arr-ext)"/>
     </svg>
 
     <!-- Relation labels -->
@@ -774,12 +774,17 @@ const tl = gsap.timeline({ paused: true });
 
 // SET STATES
 gsap.set(".uc-pill, .separator-line, .actor-chips, .actor-link, .flow, .rel-label", { opacity: 0 });
-gsap.set(".link-agent-eval, .link-man-eval", { opacity: 1 }); // Agent and Manager to UC8 links visible from start
+gsap.set(".link-agent-eval, .link-man-eval", { opacity: 0, strokeOpacity: 0 }); // Hidden initially
 gsap.set(".uc-pill", { y: 10 });
 gsap.set(".system-boundary", { opacity: 0, scale: 0.98 });
 gsap.set(".actor", { opacity: 0, x: -30 });
 gsap.set(".module", { opacity: 0, y: 20 });
-gsap.set(".flow", { strokeDasharray: 400, strokeDashoffset: 400 }); // reset all svg flows
+
+// Helper to calculate and set strokeDasharray dynamically
+document.querySelectorAll('.flow').forEach(path => {
+  const length = path.getTotalLength();
+  gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+});
 
 // ----------------------------------------------------------------------------------
 // TIMELINE EVENTS 
@@ -810,7 +815,8 @@ tl.to(".mod-performance", { scale: 1, duration: 0.3 }, "+=0.1");
 // ETAPE 3 : ACTION - ÉVALUATION QUOTIDIENNE (AGENT)
 tl.addLabel("step3", "+=0.2");
 tl.to(".mod-evaluation", { scale: 1.05, boxShadow: "0 10px 25px rgba(194,65,12,0.2)", duration: 0.4 });
-tl.to(".link-agent-eval, .link-man-eval, .link-agent-perf", { opacity: 1, strokeWidth: 2, duration: 0.4 }, "-=0.3");
+tl.to(".link-agent-eval, .link-man-eval", { opacity: 1, strokeOpacity: 1, duration: 0.6, stagger: 0.2 });
+tl.to(".link-agent-perf", { opacity: 0.8, duration: 0.4 }, "-=0.3");
 tl.to(".mod-evaluation .uc-pill", { opacity: 1, y: 0, duration: 0.4 });
 tl.to(".mod-evaluation .separator-line, .mod-evaluation .actor-chips", { opacity: 1, duration: 0.3 });
 tl.to(".mod-evaluation", { scale: 1, duration: 0.3 }, "+=0.1");
