@@ -408,13 +408,16 @@
   bottom: 30px;
   left: 40%;
   transform: translateX(-50%);
-  width: 600px;
-  padding: 18px 26px;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  width: 709px;
+  padding: 22px 32px;
+  background: rgb(255, 255, 255);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(10, 36, 99, 0.15);
+  border-radius: 16px;
+  box-shadow: 
+    0 20px 50px rgba(10, 36, 99, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
   text-align: center;
   font-family: 'DM Sans', sans-serif;
   z-index: 50;
@@ -423,19 +426,30 @@
 }
 
 #story-step-title {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   color: #6366F1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
+  text-shadow: 0 1px 2px rgba(99, 102, 241, 0.2);
 }
 
 #story-step-desc {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   color: #1e293b;
-  line-height: 1.4;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  white-space: pre-wrap;
+}
+
+#story-step-desc .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(8px);
+  white-space: pre;
 }
 
 /* Control Buttons Bar (Keep Grouped) */
@@ -829,10 +843,10 @@ body.presenting .system-boundary {
 <script id="gsap-master-timeline">
 // Dictionnaire du Storytelling (Conforme au Cahier des Charges)
 const stories = [
-  { title: "DÉPLOIEMENT DU SYSTÈME", desc: "Instanciation du PGI Performance dans l'écosystème numérique de l'ANIP Bénin." }, // 0
-  { title: "ÉTAPE 1 : SOCLE MÉTIER (3.1)", desc: "L'Admin et la DRH configurent le référentiel : profils agents, mapping des postes et compétences attendues." }, // 1
+  { title: "DÉPLOIEMENT DU SYSTÈME", desc: "Instanciation du PGI Performance dans l'écosystème numérique de l'ANIP ." }, // 0
+  { title: "ÉTAPE 1 : SOCLE MÉTIER (3.1)", desc: "L'Admin et la DRH configurent le référentiel: profils agents, mapping des postes et compétences attendues." }, // 1
   { title: "ÉTAPE 2 : STRATÉGIE OKR (3.2)", desc: "La Direction définit les objectifs stratégiques. Les Chefs de service déploient les KPI opérationnels et quotidiens." }, // 2
-  { title: "ÉTAPE 3 : ACTION & ÉVALUATION (3.3)", desc: "L'Agent au cœur du système. Sa performance est mesurée en temps réel face aux objectifs fixés." }, // 3
+  { title: "ÉTAPE 3 : ACTION & ÉVALUATION (3.3)", desc: "L'Agent au cœur du système. Sa performance est mesurée en temps réel face aux objectifs fixés. " }, // 3
   { title: "ÉTAPE 4 : INTELLIGENCE DE SCORING (3.4)", desc: "Le moteur calcule instantanément le score de performance et alimente les analyses de tendances." }, // 4
   { title: "ÉTAPE 5 : IA & COACHING (3.5)", desc: "L'IA analyse les écarts et propose un coaching proactif ainsi que des recommandations personnalisées à l'Agent." }, // 5
   { title: "ÉTAPE 6 : UPSKILLING LMS (3.6 & 3.7)", desc: "Déclenchement automatique des parcours de formation pour combler les lacunes détectées par le système." }, // 6
@@ -847,19 +861,67 @@ function updateStoryUI(stepIndex) {
   const t = document.getElementById("story-step-title");
   const d = document.getElementById("story-step-desc");
   
-  // Bulle Animation: Simple Pop impact
-  gsap.killTweensOf(panel);
-  gsap.fromTo(panel, 
-    { opacity: 0, scale: 0.9, y: 10 },
-    { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "power2.out", onStart: () => { panel.style.display = "block"; } }
+  const tlIn = gsap.timeline();
+  const tlOut = gsap.timeline({ onComplete: () => {
+    t.innerText = stories[stepIndex].title;
+    d.innerHTML = createCharSpans(stories[stepIndex].desc);
+    panel.style.display = "block";
+    animateEntrance(panel, d);
+    if (isPresenting) {
+      applyFocus(stepIndex);
+    }
+  }});
+
+  if (panel.style.display === "block") {
+    tlOut.to(panel, {
+      opacity: 0,
+      filter: "blur(20px)",
+      y: -15,
+      duration: 0.5,
+      ease: "power2.in"
+    });
+  } else {
+    t.innerText = stories[stepIndex].title;
+    d.innerHTML = createCharSpans(stories[stepIndex].desc);
+    panel.style.display = "block";
+    animateEntrance(panel, d);
+    if (isPresenting) {
+      applyFocus(stepIndex);
+    }
+  }
+}
+
+function createCharSpans(text) {
+  return text.split(' ').map(word => 
+    word === '' ? '' : `<span class="word">${word} </span>`
+  ).join('');
+}
+
+function animateEntrance(panel, descContainer) {
+  const duration = 1.2;
+  
+  gsap.fromTo(panel,
+    { opacity: 0, filter: "blur(25px)", y: 25 },
+    { 
+      opacity: 1, 
+      filter: "blur(0px)", 
+      y: 0, 
+      duration: duration, 
+      ease: "power2.out",
+      onStart: () => {
+        gsap.set(descContainer.querySelectorAll('.word'), { opacity: 0, y: 10 });
+      }
+    }
   );
   
-  t.innerText = stories[stepIndex].title;
-  d.innerHTML = stories[stepIndex].desc;
-
-  if (isPresenting) {
-    applyFocus(stepIndex);
-  }
+  gsap.to(descContainer.querySelectorAll('.word'), {
+    opacity: 1,
+    y: 0,
+    duration: 0.5,
+    stagger: 0.15,
+    ease: "power2.out",
+    delay: duration * 0.2
+  });
 }
 
 function applyFocus(stepIndex) {
