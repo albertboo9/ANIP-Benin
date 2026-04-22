@@ -402,6 +402,95 @@
 
   /* UC8 links (initially hidden by opacity, but NOT stroke-opacity force) */
   .link-agent-eval, .link-man-eval { opacity: 0; }
+/* Story Panel - Back to Initial Style */
+#story-panel {
+  position: fixed;
+  bottom: 30px;
+  left: 40%;
+  transform: translateX(-50%);
+  width: 600px;
+  padding: 18px 26px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  z-index: 50;
+  display: none;
+  pointer-events: none;
+}
+
+#story-step-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366F1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+#story-step-desc {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+/* Control Buttons Bar (Keep Grouped) */
+.controls-container {
+  position: fixed;
+  bottom: 25px;
+  right: 30px;
+  display: flex;
+  gap: 12px;
+  z-index: 2100;
+  background: rgba(255,255,255,0.8);
+  padding: 10px;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Focus Class - Keep Pulse ONLY */
+body.presenting .actor, 
+body.presenting .module, 
+body.presenting .actor-link, 
+body.presenting .flow, 
+body.presenting .rel-label,
+body.presenting .system-boundary {
+  transition: box-shadow 0.6s ease;
+}
+
+/* Pulse effect for focused module & actors */
+@keyframes module-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(10,36,99,0.5); }
+  70% { box-shadow: 0 0 0 20px rgba(10,36,99,0); }
+  100% { box-shadow: 0 0 0 0 rgba(10,36,99,0); }
+}
+
+@keyframes actor-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.6); }
+  70% { box-shadow: 0 0 0 15px rgba(59,130,246,0); }
+  100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+}
+
+.pulse-focus {
+  animation: module-pulse 2s infinite;
+  z-index: 100 !important;
+  opacity: 1 !important;
+}
+
+.actor.pulse-focus .actor-icon {
+  animation: actor-pulse 2s infinite;
+  border-color: #3B82F6;
+}
+
+.pulse-focus .uc-pill {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
@@ -722,19 +811,19 @@
     <div class="rel-label" style="left:330px;top:437px;">«extend»</div>
     <div class="rel-label" style="left:555px;top:424px;">«extend»</div>
 
-  </div><!-- end <!-- Story Panel -->
-<div id="story-panel" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 600px; padding: 18px 26px; background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); text-align: center; font-family: 'DM Sans', sans-serif; z-index: 50; display: none;">
-  <div style="font-size: 11px; font-weight: 700; color: #6366F1; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;" id="story-step-title">PROCESSUS</div>
-  <div style="font-size: 14px; font-weight: 500; color: #1e293b; line-height: 1.4;" id="story-step-desc">...</div>
+<!-- Story Panel (Re-designed) -->
+<div id="story-panel">
+  <div id="story-step-title">PROCESSUS</div>
+  <div id="story-step-desc">...</div>
 </div>
 
 <!-- Laser Cursor -->
 <div id="laser-cursor"></div>
 
-<!-- Control Buttons -->
-<div style="position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 100;">
-  <button id="replayBtn" class="control-btn"><i class="fas fa-redo-alt" style="margin-right: 6px;"></i>Rejouer Mode Auto</button>
-  <button id="presentBtn" class="control-btn"><i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation (Pas-à-pas)</button>
+<!-- Control Buttons (Re-designed container) -->
+<div class="controls-container">
+  <button id="replayBtn" class="control-btn"><i class="fas fa-redo-alt"></i></button>
+  <button id="presentBtn" class="control-btn"><i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation</button>
 </div>
 
 <script id="gsap-master-timeline">
@@ -755,16 +844,56 @@ const stories = [
 function updateStoryUI(stepIndex) {
   if(!stories[stepIndex]) return;
   const panel = document.getElementById("story-panel");
-  panel.style.display = "block";
   const t = document.getElementById("story-step-title");
   const d = document.getElementById("story-step-desc");
   
+  // Bulle Animation: Simple Pop impact
   gsap.killTweensOf(panel);
-  gsap.to(panel, { opacity: 0, duration: 0.15, y: 5, onComplete: () => {
-    t.innerText = stories[stepIndex].title;
-    d.innerHTML = stories[stepIndex].desc;
-    gsap.to(panel, { opacity: 1, duration: 0.4, y: 0 });
-  }});
+  gsap.fromTo(panel, 
+    { opacity: 0, scale: 0.9, y: 10 },
+    { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "power2.out", onStart: () => { panel.style.display = "block"; } }
+  );
+  
+  t.innerText = stories[stepIndex].title;
+  d.innerHTML = stories[stepIndex].desc;
+
+  if (isPresenting) {
+    applyFocus(stepIndex);
+  }
+}
+
+function applyFocus(stepIndex) {
+  // Remove pulse from all
+  document.querySelectorAll('.pulse-focus').forEach(el => {
+    el.classList.remove('pulse-focus');
+  });
+
+  let pulseTargets = [];
+  
+  switch(stepIndex) {
+    case 1: pulseTargets = ['.mod-referentiel', '.a-admin', '.a-drh']; break;
+    case 2: pulseTargets = ['.mod-performance', '.a-direction', '.a-manager']; break;
+    case 3: pulseTargets = ['.mod-evaluation', '.a-agent', '.a-manager']; break;
+    case 4: pulseTargets = ['.mod-analytics', '.a-direction', '.a-manager']; break;
+    case 5: pulseTargets = ['.mod-ia', '.a-agent']; break;
+    case 6: pulseTargets = ['.mod-formation', '.a-agent', '.a-drh', '.a-manager']; break;
+    case 8: pulseTargets = ['.mod-dashboard', '.a-agent', '.a-manager', '.a-direction']; break;
+  }
+
+  pulseTargets.forEach(selector => {
+    // For actors, we want to pulse the actor container but the animation is on the icon via CSS
+    if (selector.startsWith('.a-')) {
+      // Find the actor div that has this class or contains it
+      document.querySelectorAll('.actor').forEach(actor => {
+        if (actor.classList.contains(selector.substring(1)) || actor.getAttribute('title').toLowerCase().includes(selector.substring(3))) {
+           actor.classList.add('pulse-focus');
+        }
+      });
+    } else {
+      const target = document.querySelector(selector);
+      if (target) target.classList.add('pulse-focus');
+    }
+  });
 }
 
 // ----------------------------------------------------------------------------------
@@ -902,12 +1031,18 @@ let maxSteps = 9;
 function playAutoMode() {
   isPresenting = false;
   document.body.classList.remove("presenting");
-  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation (Pas-à-pas)';
+  
+  // Nettoyage complet des effets de focus et pulsation
+  document.querySelectorAll('.is-focused, .is-dimmed, .pulse-focus').forEach(el => {
+    el.classList.remove('is-focused', 'is-dimmed', 'pulse-focus');
+  });
+
+  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation';
   document.getElementById("presentBtn").style.background = "#0A2463";
   document.getElementById("story-panel").style.display = "none";
   gsap.set(".mod-analytics, .mod-ia, .mod-formation", { clearProps: "boxShadow,y" });
   
-  tl.restart(); // Lit toute la timeline automatiquement sans pause !
+  tl.restart(); 
 }
 
 // Lancement par défaut en mode AUTO
@@ -928,28 +1063,24 @@ document.getElementById("presentBtn").onclick = (e) => {
   tl.progress(0); 
   gsap.set(".mod-analytics, .mod-ia, .mod-formation", { clearProps: "boxShadow,y" });
   
-  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-hand-pointer" style="margin-right: 6px;"></i>Cliquer (n\'importe où) pour continuer';
-  document.getElementById("presentBtn").style.background = "#10B981"; // Active Green
+  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-hand-pointer" style="margin-right: 6px;"></i>Cliquer pour continuer';
+  document.getElementById("presentBtn").style.background = "#10B981"; 
   
   currentStep = 0;
-  updateStoryUI(currentStep); // Affiche le panel de l'étape 0
-  tl.tweenTo("step0"); // Joue l'initialisation et s'arrête
+  updateStoryUI(currentStep); // Affiche le texte de l'étape 0
+  tl.tweenTo("step1"); // JOUE l'étape 0 immédiatement
 };
 
 document.addEventListener("click", (e) => {
   if (isPresenting && !e.target.closest('.control-btn')) {
     
-    // Empêcher de double-cliquer pendant qu'une étape d'animation se joue
-    if (tl.isActive()) {
-      return;
-    }
+    if (tl.isActive()) return;
     
     if (currentStep < maxSteps) {
       currentStep++;
-      updateStoryUI(currentStep); // Mise à jour du texte AVANT l'animation
-      tl.tweenTo("step" + currentStep); // On joue jusqu'à l'étiquette de l'étape
+      updateStoryUI(currentStep); 
+      tl.tweenTo("step" + currentStep); 
     } else {
-      // Fin de la présentation -> bascule sur la boucle infinie
       playAutoMode();
     }
   }
