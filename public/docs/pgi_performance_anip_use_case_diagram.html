@@ -840,10 +840,10 @@ tl.to(".mod-evaluation", { scale: 1, duration: 0.3 }, "+=0.1");
 
 // ETAPE 4 : INTELLIGENCE - SCORING & ANALYTICS
 tl.addLabel("step4", "+=0.2");
-tl.to(".mod-analytics", { scale: 1.05, boxShadow: "0 10px 25px rgba(29,78,216,0.2)", duration: 0.4 });
 tl.to(".flow-eval-score", { opacity: 1, strokeDashoffset: 0, duration: 1.2, ease: "power1.inOut" });
+tl.to(".mod-analytics", { scale: 1.05, boxShadow: "0 10px 25px rgba(29,78,216,0.2)", duration: 0.4 }, "-=0.2");
 tl.to(".mod-analytics .uc-pill:nth-of-type(1)", { opacity: 1, y: 0, duration: 0.3 });
-tl.to(".flow-score-analytics", { opacity: 1, strokeDashoffset: 0, duration: 0.6 });
+tl.to(".flow-score-analytics", { opacity: 1, strokeDashoffset: 0, duration: 0.8, ease: "power1.inOut" });
 tl.to(".mod-analytics .uc-pill:nth-of-type(2)", { opacity: 1, y: 0, duration: 0.3 });
 tl.to(".link-dir-ana, .link-man-ana", { opacity: 0.8, duration: 0.4 }, "-=0.2");
 tl.to(".mod-analytics .separator-line, .mod-analytics .actor-chips", { opacity: 1, duration: 0.3 });
@@ -851,8 +851,8 @@ tl.to(".mod-analytics", { scale: 1, duration: 0.3 }, "+=0.1");
 
 // ETAPE 5 : IA & COACHING PRÉDICTIF
 tl.addLabel("step5", "+=0.2");
-tl.to(".mod-ia", { scale: 1.05, boxShadow: "0 10px 25px rgba(124,58,237,0.2)", duration: 0.4 });
-tl.to(".flow-analytics-ia", { opacity: 1, strokeDashoffset: 0, duration: 0.8 });
+tl.to(".flow-analytics-ia", { opacity: 1, strokeDashoffset: 0, duration: 0.8, ease: "power1.inOut" });
+tl.to(".mod-ia", { scale: 1.05, boxShadow: "0 10px 25px rgba(124,58,237,0.2)", duration: 0.4 }, "-=0.2");
 tl.to(".mod-ia .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
 tl.to(".link-agent-ia", { opacity: 0.8, duration: 0.4 }, "-=0.2");
 tl.to(".mod-ia .separator-line, .mod-ia .actor-chips", { opacity: 1, duration: 0.3 });
@@ -860,8 +860,8 @@ tl.to(".mod-ia", { scale: 1, duration: 0.3 }, "+=0.1");
 
 // ETAPE 6 : UPSKILLING - FORMATION LMS
 tl.addLabel("step6", "+=0.2");
-tl.to(".mod-formation", { scale: 1.05, boxShadow: "0 10px 25px rgba(190,18,60,0.2)", duration: 0.4 });
-tl.to(".flow-ia-formation", { opacity: 1, strokeDashoffset: 0, duration: 0.8 });
+tl.to(".flow-ia-formation", { opacity: 1, strokeDashoffset: 0, duration: 0.8, ease: "power1.inOut" });
+tl.to(".mod-formation", { scale: 1.05, boxShadow: "0 10px 25px rgba(190,18,60,0.2)", duration: 0.4 }, "-=0.2");
 tl.to(".mod-formation .uc-pill", { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 });
 tl.to(".link-agent-form, .link-man-form, .link-drh-form", { opacity: 0.8, duration: 0.4 }, "-=0.2");
 tl.to(".mod-formation .separator-line, .mod-formation .actor-chips", { opacity: 1, duration: 0.3 });
