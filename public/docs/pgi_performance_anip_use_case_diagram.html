@@ -400,8 +400,111 @@
   .type-include { background: #EDE9FE; color: #6D28D9; }
   .type-extend  { background: #DBEAFE; color: #1D4ED8; }
 
-  /* Ensure critical UC8 links are always visible */
-  .link-agent-eval, .link-man-eval { stroke-opacity: 1 !important; }
+  /* UC8 links (initially hidden by opacity, but NOT stroke-opacity force) */
+  .link-agent-eval, .link-man-eval { opacity: 0; }
+/* Story Panel - Back to Initial Style */
+#story-panel {
+  position: fixed;
+  bottom: 30px;
+  left: 40%;
+  transform: translateX(-50%);
+  width: 709px;
+  padding: 22px 32px;
+  background: rgb(255, 255, 255);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(10, 36, 99, 0.15);
+  border-radius: 16px;
+  box-shadow: 
+    0 20px 50px rgba(10, 36, 99, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  z-index: 50;
+  display: none;
+  pointer-events: none;
+}
+
+#story-step-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #6366F1;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  text-shadow: 0 1px 2px rgba(99, 102, 241, 0.2);
+}
+
+#story-step-desc {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  white-space: pre-wrap;
+}
+
+#story-step-desc .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(8px);
+  white-space: pre;
+}
+
+/* Control Buttons Bar (Keep Grouped) */
+.controls-container {
+  position: fixed;
+  bottom: 25px;
+  right: 30px;
+  display: flex;
+  gap: 12px;
+  z-index: 2100;
+  background: rgba(255,255,255,0.8);
+  padding: 10px;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Focus Class - Keep Pulse ONLY */
+body.presenting .actor, 
+body.presenting .module, 
+body.presenting .actor-link, 
+body.presenting .flow, 
+body.presenting .rel-label,
+body.presenting .system-boundary {
+  transition: box-shadow 0.6s ease;
+}
+
+/* Pulse effect for focused module & actors */
+@keyframes module-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(10,36,99,0.5); }
+  70% { box-shadow: 0 0 0 20px rgba(10,36,99,0); }
+  100% { box-shadow: 0 0 0 0 rgba(10,36,99,0); }
+}
+
+@keyframes actor-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.6); }
+  70% { box-shadow: 0 0 0 15px rgba(59,130,246,0); }
+  100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+}
+
+.pulse-focus {
+  animation: module-pulse 2s infinite;
+  z-index: 100 !important;
+  opacity: 1 !important;
+}
+
+.actor.pulse-focus .actor-icon {
+  animation: actor-pulse 2s infinite;
+  border-color: #3B82F6;
+}
+
+.pulse-focus .uc-pill {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
@@ -702,9 +805,18 @@
       <!-- Manager -> Evaluation UC8 -->
       <line class="actor-link link-man-eval" x1="58" y1="400" x2="677" y2="72" stroke="#10B981" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#arr-actor)"/>
 
-      <!-- ============ INTERNAL RELATIONS ============ -->
-      <!-- UC8 -> UC9: include (Evaluation -> Scoring) vertical -->
-     
+      <!-- ============ INTERNAL RELATIONS (PATHS) ============ -->
+      <!-- UC8 (Eval) -> UC9 (Score) -->
+      <path class="flow flow-eval-score" d="M 700 135 L 700 240 L 230 240 L 230 275" fill="none" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr-inc)"/>
+      
+      <!-- UC9 (Score) -> UC10 (Analytics) -->
+      <path class="flow flow-score-analytics" d="M 233 335 L 233 355" fill="none" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arr-inc)"/>
+      
+      <!-- UC10 (Analytics) -> UC11 (IA) -->
+      <path class="flow flow-analytics-ia" d="M 328 320 L 350 320" fill="none" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr-ext)"/>
+      
+      <!-- UC11 (IA) -> UC12 (Formation) -->
+      <path class="flow flow-ia-formation" d="M 560 320 L 580 320" fill="none" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arr-ext)"/>
     </svg>
 
     <!-- Relation labels -->
@@ -713,49 +825,137 @@
     <div class="rel-label" style="left:330px;top:437px;">«extend»</div>
     <div class="rel-label" style="left:555px;top:424px;">«extend»</div>
 
-  </div><!-- end <!-- Story Panel -->
-<div id="story-panel" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 600px; padding: 18px 26px; background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); text-align: center; font-family: 'DM Sans', sans-serif; z-index: 50; display: none;">
-  <div style="font-size: 11px; font-weight: 700; color: #6366F1; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;" id="story-step-title">PROCESSUS</div>
-  <div style="font-size: 14px; font-weight: 500; color: #1e293b; line-height: 1.4;" id="story-step-desc">...</div>
+<!-- Story Panel (Re-designed) -->
+<div id="story-panel">
+  <div id="story-step-title">PROCESSUS</div>
+  <div id="story-step-desc">...</div>
 </div>
 
 <!-- Laser Cursor -->
 <div id="laser-cursor"></div>
 
-<!-- Control Buttons -->
-<div style="position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 100;">
-  <button id="replayBtn" class="control-btn"><i class="fas fa-redo-alt" style="margin-right: 6px;"></i>Rejouer Mode Auto</button>
-  <button id="presentBtn" class="control-btn"><i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation (Pas-à-pas)</button>
+<!-- Control Buttons (Re-designed container) -->
+<div class="controls-container">
+  <button id="replayBtn" class="control-btn"><i class="fas fa-redo-alt"></i></button>
+  <button id="presentBtn" class="control-btn"><i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation</button>
 </div>
 
 <script id="gsap-master-timeline">
 // Dictionnaire du Storytelling (Conforme au Cahier des Charges)
 const stories = [
-  { title: "DÉPLOIEMENT DU PGI", desc: "Le progiciel de pilotage de la performance s'instancie dans l'écosystème ANIP." }, // 0
-  { title: "ÉTAPE 1 : GESTION DES PROFILS ET RÉFÉRENTIELS (3.1)", desc: "L'Administrateur bâtit le socle. Il crée les profils métiers et mappe les compétences attendues pour chaque agent de l'ANIP." }, // 1
-  { title: "ÉTAPE 2 : OBJECTIFS OKR ET KPI (3.2)", desc: "La Direction Globale fixe les OKR stratégiques. Les Chefs déploient ensuite les KPI quotidiens adaptés pour chaque agent." }, // 2
-  { title: "ÉTAPE 3 : ÉVALUATION CONTINUE (3.3)", desc: "C'est l'agent qui déclenche l'action. Sa performance quotidienne est évaluée en temps réel selon les OKR préalablement établis." }, // 3
-  { title: "ÉTAPE 4 : MOTEUR DE SCORING ET ANALYTICS (3.4)", desc: "L'évaluation est instantanément traduite en Score dynamique (ranking). Les données alimentent le module Analytics pour détecter anomalies et progressions." }, // 4
-  { title: "ÉTAPE 5 : IA ET COACHING INTELLIGENT (3.5)", desc: "L'Intelligence Artificielle ingère les données Analytics pour détecter les lacunes et offrir un coaching quotidien directement à l'Agent." }, // 5
-  { title: "ÉTAPE 6 : FORMATION SUR-MESURE LMS (3.6 & 3.7)", desc: "Directement recommandée par l'IA ou demandée, une formation d'upskilling est assignée à l'agent, sous le contrôle du Chef et validation DRH." }, // 6
-  { title: "ÉTAPE 7 : ÉCOSYSTÈME 360° (3.8 à 3.10)", desc: "Gamification, Espaces collaboratifs, et Feedback multi-acteurs (Supérieurs, Pairs, Usagers) complètent le système pour garantir l'engagement profond de chaque acteur." }, // 7
-  { title: "ÉTAPE 8 : PILOTAGE GLOBAL (4.0)", desc: "L'ensemble du système alimente les Dashboards pour une visibilité totale de la Performance à l'échelle de l'Agent, du Chef et de la Direction." }, // 8
-  { title: "BOUCLE VERTUEUSE COMPLÈTE", desc: "Le système tourne : un cycle d'amélioration continue fluide, automatisé, et temps réel pour la performance de l'ANIP !" } // 9
+  { title: "DÉPLOIEMENT DU SYSTÈME", desc: "Instanciation du PGI Performance dans l'écosystème numérique de l'ANIP ." }, // 0
+  { title: "ÉTAPE 1 : SOCLE MÉTIER (3.1)", desc: "L'Admin et la DRH configurent le référentiel: profils agents, mapping des postes et compétences attendues." }, // 1
+  { title: "ÉTAPE 2 : STRATÉGIE OKR (3.2)", desc: "La Direction définit les objectifs stratégiques. Les Chefs de service déploient les KPI opérationnels et quotidiens." }, // 2
+  { title: "ÉTAPE 3 : ACTION & ÉVALUATION (3.3)", desc: "L'Agent au cœur du système. Sa performance est mesurée en temps réel face aux objectifs fixés. " }, // 3
+  { title: "ÉTAPE 4 : INTELLIGENCE DE SCORING (3.4)", desc: "Le moteur calcule instantanément le score de performance et alimente les analyses de tendances." }, // 4
+  { title: "ÉTAPE 5 : IA & COACHING (3.5)", desc: "L'IA analyse les écarts et propose un coaching proactif ainsi que des recommandations personnalisées à l'Agent." }, // 5
+  { title: "ÉTAPE 6 : UPSKILLING LMS (3.6 & 3.7)", desc: "Déclenchement automatique des parcours de formation pour combler les lacunes détectées par le système." }, // 6
+  { title: "ÉTAPE 7 : ENGAGEMENT 360° (3.8 - 3.10)", desc: "Feedback collaboratif, Gamification et communication interne pour stimuler la motivation des troupes." }, // 7
+  { title: "ÉTAPE 8 : PILOTAGE DIRECTION (4.0)", desc: "Dashboards consolidés pour une visibilité totale et une prise de décision basée sur la donnée réelle." }, // 8
+  { title: "CYCLE DE PERFORMANCE", desc: "Le système tourne en boucle continue : une optimisation perpétuelle pour l'excellence opérationnelle de l'ANIP." } // 9
 ];
 
 function updateStoryUI(stepIndex) {
   if(!stories[stepIndex]) return;
   const panel = document.getElementById("story-panel");
-  panel.style.display = "block";
   const t = document.getElementById("story-step-title");
   const d = document.getElementById("story-step-desc");
   
-  gsap.killTweensOf(panel);
-  gsap.to(panel, { opacity: 0, duration: 0.15, y: 5, onComplete: () => {
+  const tlIn = gsap.timeline();
+  const tlOut = gsap.timeline({ onComplete: () => {
     t.innerText = stories[stepIndex].title;
-    d.innerHTML = stories[stepIndex].desc;
-    gsap.to(panel, { opacity: 1, duration: 0.4, y: 0 });
+    d.innerHTML = createCharSpans(stories[stepIndex].desc);
+    panel.style.display = "block";
+    animateEntrance(panel, d);
+    if (isPresenting) {
+      applyFocus(stepIndex);
+    }
   }});
+
+  if (panel.style.display === "block") {
+    tlOut.to(panel, {
+      opacity: 0,
+      filter: "blur(20px)",
+      y: -15,
+      duration: 0.5,
+      ease: "power2.in"
+    });
+  } else {
+    t.innerText = stories[stepIndex].title;
+    d.innerHTML = createCharSpans(stories[stepIndex].desc);
+    panel.style.display = "block";
+    animateEntrance(panel, d);
+    if (isPresenting) {
+      applyFocus(stepIndex);
+    }
+  }
+}
+
+function createCharSpans(text) {
+  return text.split(' ').map(word => 
+    word === '' ? '' : `<span class="word">${word} </span>`
+  ).join('');
+}
+
+function animateEntrance(panel, descContainer) {
+  const duration = 1.2;
+  
+  gsap.fromTo(panel,
+    { opacity: 0, filter: "blur(25px)", y: 25 },
+    { 
+      opacity: 1, 
+      filter: "blur(0px)", 
+      y: 0, 
+      duration: duration, 
+      ease: "power2.out",
+      onStart: () => {
+        gsap.set(descContainer.querySelectorAll('.word'), { opacity: 0, y: 10 });
+      }
+    }
+  );
+  
+  gsap.to(descContainer.querySelectorAll('.word'), {
+    opacity: 1,
+    y: 0,
+    duration: 0.5,
+    stagger: 0.15,
+    ease: "power2.out",
+    delay: duration * 0.2
+  });
+}
+
+function applyFocus(stepIndex) {
+  // Remove pulse from all
+  document.querySelectorAll('.pulse-focus').forEach(el => {
+    el.classList.remove('pulse-focus');
+  });
+
+  let pulseTargets = [];
+  
+  switch(stepIndex) {
+    case 1: pulseTargets = ['.mod-referentiel', '.a-admin', '.a-drh']; break;
+    case 2: pulseTargets = ['.mod-performance', '.a-direction', '.a-manager']; break;
+    case 3: pulseTargets = ['.mod-evaluation', '.a-agent', '.a-manager']; break;
+    case 4: pulseTargets = ['.mod-analytics', '.a-direction', '.a-manager']; break;
+    case 5: pulseTargets = ['.mod-ia', '.a-agent']; break;
+    case 6: pulseTargets = ['.mod-formation', '.a-agent', '.a-drh', '.a-manager']; break;
+    case 8: pulseTargets = ['.mod-dashboard', '.a-agent', '.a-manager', '.a-direction']; break;
+  }
+
+  pulseTargets.forEach(selector => {
+    // For actors, we want to pulse the actor container but the animation is on the icon via CSS
+    if (selector.startsWith('.a-')) {
+      // Find the actor div that has this class or contains it
+      document.querySelectorAll('.actor').forEach(actor => {
+        if (actor.classList.contains(selector.substring(1)) || actor.getAttribute('title').toLowerCase().includes(selector.substring(3))) {
+           actor.classList.add('pulse-focus');
+        }
+      });
+    } else {
+      const target = document.querySelector(selector);
+      if (target) target.classList.add('pulse-focus');
+    }
+  });
 }
 
 // ----------------------------------------------------------------------------------
@@ -765,109 +965,120 @@ const tl = gsap.timeline({ paused: true });
 
 // SET STATES
 gsap.set(".uc-pill, .separator-line, .actor-chips, .actor-link, .flow, .rel-label", { opacity: 0 });
-gsap.set(".link-agent-eval, .link-man-eval", { opacity: 1 }); // Agent and Manager to UC8 links visible from start
+gsap.set(".link-agent-eval, .link-man-eval", { opacity: 0 }); // Masqués au départ
 gsap.set(".uc-pill", { y: 10 });
 gsap.set(".system-boundary", { opacity: 0, scale: 0.98 });
 gsap.set(".actor", { opacity: 0, x: -30 });
 gsap.set(".module", { opacity: 0, y: 20 });
-gsap.set(".flow", { strokeDasharray: 400, strokeDashoffset: 400 }); // reset all svg flows
+
+// Helper for stroke dash animations
+document.querySelectorAll('.flow, .link-agent-eval, .link-man-eval').forEach(path => {
+  let length;
+  if (path.tagName === 'line') {
+    const x1 = path.x1.baseVal.value;
+    const y1 = path.y1.baseVal.value;
+    const x2 = path.x2.baseVal.value;
+    const y2 = path.y2.baseVal.value;
+    length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  } else {
+    length = path.getTotalLength();
+  }
+  gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+});
 
 // ----------------------------------------------------------------------------------
 // TIMELINE EVENTS 
-// Nous omettons les tl.call() pour éviter les conflits au Scrubbing. L'UI est managée par les clics.
-// On rajoute de très courts délais pour aider le Auto Play
 // ----------------------------------------------------------------------------------
 
-// ETAPE 0 : INITIALISATION DE L'ENVIRONNEMENT
+// ETAPE 0 : DÉPLOIEMENT DU SYSTÈME
 tl.addLabel("step0");
 tl.to(".system-boundary", { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" });
 tl.to(".actor", { opacity: 1, x: 0, stagger: 0.1, duration: 0.5 }, "-=0.2");
-tl.to(".module", { opacity: 1, y: 0, stagger: 0.1, duration: 0.5 }, "-=0.2");
+tl.to(".module", { opacity: 1, y: 0, stagger: 0.05, duration: 0.5 }, "-=0.2");
 
-// ETAPE 1 : PARAMÉTRAGE SYSTÈME (ADMIN)
-tl.addLabel("step1", "+=0.3");
-tl.to(".link-admin-ref", { opacity: 0.6, duration: 0.4 });
-tl.to(".link-drh-ref1, .link-dir-ref2, .link-drh-ref3, .link-man-ref3, .link-drh-ref4", { opacity: 0.5, duration: 0.4 });
-tl.to(".mod-referentiel .uc-pill", { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 });
+// ETAPE 1 : SOCLE - RÉFÉRENTIEL (ADMIN/DRH)
+tl.addLabel("step1", "+=0.2");
+tl.to(".mod-referentiel", { scale: 1.05, boxShadow: "0 10px 25px rgba(55,48,163,0.2)", duration: 0.4 });
+tl.to(".link-admin-ref, .link-drh-ref1, .link-drh-ref3, .link-drh-ref4", { opacity: 0.8, duration: 0.4 }, "-=0.3");
+tl.to(".mod-referentiel .uc-pill", { opacity: 1, y: 0, stagger: 0.08, duration: 0.4 });
 tl.to(".mod-referentiel .separator-line, .mod-referentiel .actor-chips", { opacity: 1, duration: 0.3 });
+tl.to(".mod-referentiel", { scale: 1, duration: 0.3 }, "+=0.1");
 
-// ETAPE 2 : OKR ET KPI (DIRECTION/CHEF)
-tl.addLabel("step2", "+=0.3");
-tl.to(".link-dir-perf, .link-man-perf", { opacity: 0.5, duration: 0.4 });
+// ETAPE 2 : STRATÉGIE - OKR & KPI (DIRECTION/CHEF)
+tl.addLabel("step2", "+=0.2");
+tl.to(".mod-performance", { scale: 1.05, boxShadow: "0 10px 25px rgba(21,128,61,0.2)", duration: 0.4 });
+tl.to(".link-dir-perf, .link-man-perf", { opacity: 0.8, duration: 0.4 }, "-=0.3");
 tl.to(".mod-performance .uc-pill", { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 });
 tl.to(".mod-performance .separator-line, .mod-performance .actor-chips", { opacity: 1, duration: 0.3 });
+tl.to(".mod-performance", { scale: 1, duration: 0.3 }, "+=0.1");
 
-// ETAPE 3 : L'AGENT AU CENTRE (ÉVALUATION)
-tl.addLabel("step3", "+=0.3");
-tl.to(".link-agent-perf", { opacity: 0.5, duration: 0.4 });
-tl.to(".link-agent-eval, .link-man-eval", { opacity: 1, duration: 0.4 }, "-=0.2");
+// ETAPE 3 : ACTION - ÉVALUATION QUOTIDIENNE (AGENT)
+tl.addLabel("step3", "+=0.2");
+tl.to(".mod-evaluation", { scale: 1.05, boxShadow: "0 10px 25px rgba(194,65,12,0.2)", duration: 0.4 });
+tl.to(".link-agent-eval, .link-man-eval", { 
+  opacity: 1, 
+  strokeOpacity: 1, 
+  visibility: "visible", 
+  strokeDashoffset: 0, 
+  duration: 1.2, 
+  ease: "power2.inOut", 
+  stagger: 0.3 
+});
+tl.to(".link-agent-perf", { opacity: 0.8, duration: 0.4 }, "-=0.3");
 tl.to(".mod-evaluation .uc-pill", { opacity: 1, y: 0, duration: 0.4 });
 tl.to(".mod-evaluation .separator-line, .mod-evaluation .actor-chips", { opacity: 1, duration: 0.3 });
+tl.to(".mod-evaluation", { scale: 1, duration: 0.3 }, "+=0.1");
 
-// ETAPE 4 : FLUX MÉTIER -> SCORING & ANALYTICS
-tl.addLabel("step4", "+=0.3");
-tl.to(".flow-eval-score", { opacity: 0.85, duration: 0.1 });
-tl.to(".flow-eval-score", { strokeDashoffset: 0, duration: 0.8 });
-tl.to(".mod-analytics", { boxShadow: "0 0 0 2px rgba(59,130,246,0.5)", y: -2, duration: 0.3 });
+// ETAPE 4 : INTELLIGENCE - SCORING & ANALYTICS
+tl.addLabel("step4", "+=0.2");
+tl.to(".flow-eval-score", { opacity: 1, strokeDashoffset: 0, duration: 1.2, ease: "power1.inOut" });
+tl.to(".mod-analytics", { scale: 1.05, boxShadow: "0 10px 25px rgba(29,78,216,0.2)", duration: 0.4 }, "-=0.2");
 tl.to(".mod-analytics .uc-pill:nth-of-type(1)", { opacity: 1, y: 0, duration: 0.3 });
-tl.to(".rel-label:nth-of-type(1)", {opacity: 1, duration: 0.2});
-
-tl.to(".flow-score-analytics", { opacity: 0.85, duration: 0.1 });
-tl.to(".flow-score-analytics", { strokeDashoffset: 0, duration: 0.6 });
+tl.to(".flow-score-analytics", { opacity: 1, strokeDashoffset: 0, duration: 0.8, ease: "power1.inOut" });
 tl.to(".mod-analytics .uc-pill:nth-of-type(2)", { opacity: 1, y: 0, duration: 0.3 });
-tl.to(".link-dir-ana, .link-man-ana", { opacity: 0.5, duration: 0.4 });
-tl.to(".rel-label:nth-of-type(2)", {opacity: 1, duration: 0.2});
+tl.to(".link-dir-ana, .link-man-ana", { opacity: 0.8, duration: 0.4 }, "-=0.2");
 tl.to(".mod-analytics .separator-line, .mod-analytics .actor-chips", { opacity: 1, duration: 0.3 });
+tl.to(".mod-analytics", { scale: 1, duration: 0.3 }, "+=0.1");
 
-// ETAPE 5 : INTELLIGENCE ARTIFICIELLE
-tl.addLabel("step5", "+=0.3");
-tl.to(".flow-analytics-ia", { opacity: 0.85, duration: 0.1 });
-tl.to(".flow-analytics-ia", { strokeDashoffset: 0, duration: 0.8 });
-tl.to(".rel-label:nth-of-type(3)", {opacity: 1, duration: 0.2});
-
-tl.to(".mod-ia", { boxShadow: "0 0 0 2px rgba(124,58,237,0.5)", y: -2, duration: 0.3 });
+// ETAPE 5 : IA & COACHING PRÉDICTIF
+tl.addLabel("step5", "+=0.2");
+tl.to(".flow-analytics-ia", { opacity: 1, strokeDashoffset: 0, duration: 0.8, ease: "power1.inOut" });
+tl.to(".mod-ia", { scale: 1.05, boxShadow: "0 10px 25px rgba(124,58,237,0.2)", duration: 0.4 }, "-=0.2");
 tl.to(".mod-ia .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
-tl.to(".link-agent-ia", { opacity: 0.5, duration: 0.4 });
+tl.to(".link-agent-ia", { opacity: 0.8, duration: 0.4 }, "-=0.2");
 tl.to(".mod-ia .separator-line, .mod-ia .actor-chips", { opacity: 1, duration: 0.3 });
+tl.to(".mod-ia", { scale: 1, duration: 0.3 }, "+=0.1");
 
-// ETAPE 6 : FORMATION & LMS
-tl.addLabel("step6", "+=0.3");
-tl.to(".flow-ia-formation", { opacity: 0.85, duration: 0.1 });
-tl.to(".flow-ia-formation", { strokeDashoffset: 0, duration: 0.8 });
-tl.to(".mod-formation", { boxShadow: "0 0 0 2px rgba(190,18,60,0.5)", y: -2, duration: 0.3 });
-tl.to(".rel-label:nth-of-type(4)", {opacity: 1, duration: 0.2});
-
+// ETAPE 6 : UPSKILLING - FORMATION LMS
+tl.addLabel("step6", "+=0.2");
+tl.to(".flow-ia-formation", { opacity: 1, strokeDashoffset: 0, duration: 0.8, ease: "power1.inOut" });
+tl.to(".mod-formation", { scale: 1.05, boxShadow: "0 10px 25px rgba(190,18,60,0.2)", duration: 0.4 }, "-=0.2");
 tl.to(".mod-formation .uc-pill", { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 });
-tl.to(".link-agent-form, .link-man-form, .link-drh-form", { opacity: 0.5, duration: 0.4 });
+tl.to(".link-agent-form, .link-man-form, .link-drh-form", { opacity: 0.8, duration: 0.4 }, "-=0.2");
 tl.to(".mod-formation .separator-line, .mod-formation .actor-chips", { opacity: 1, duration: 0.3 });
+tl.to(".mod-formation", { scale: 1, duration: 0.3 }, "+=0.1");
 
 // ETAPE 7 : ÉCOSYSTÈME 360 & ENGAGEMENT
-tl.addLabel("step7", "+=0.3");
-tl.to(".link-agent-feed, .link-man-feed, .link-usa-feed", { opacity: 0.5, duration: 0.3 });
-tl.to(".link-agent-eval, .link-man-eval", { opacity: 1, duration: 0.3 }, "-=0.1");
-tl.to(".mod-feedback .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
-tl.to(".mod-feedback .separator-line, .mod-feedback .actor-chips", { opacity: 1, duration: 0.2 });
+tl.addLabel("step7", "+=0.2");
+tl.to(".mod-feedback, .mod-collab, .mod-gamif", { scale: 1.02, opacity: 1, duration: 0.5, stagger: 0.1 });
+tl.to(".link-agent-feed, .link-man-feed, .link-usa-feed, .link-agent-collab, .link-agent-gamif", { opacity: 0.7, duration: 0.4 }, "-=0.3");
+tl.to(".mod-feedback .uc-pill, .mod-collab .uc-pill, .mod-gamif .uc-pill", { opacity: 1, y: 0, duration: 0.3, stagger: 0.05 });
+tl.to(".mod-feedback .actor-chips, .mod-collab .actor-chips, .mod-gamif .actor-chips", { opacity: 1, duration: 0.3 });
+tl.to(".mod-feedback, .mod-collab, .mod-gamif", { scale: 1, duration: 0.3 });
 
-tl.to(".link-agent-collab", { opacity: 0.5, duration: 0.3 }, "-=0.1");
-tl.to(".mod-collab .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
-tl.to(".mod-collab .separator-line, .mod-collab .actor-chips", { opacity: 1, duration: 0.2 });
-
-tl.to(".link-agent-gamif", { opacity: 0.5, duration: 0.3 }, "-=0.1");
-tl.to(".mod-gamif .uc-pill", { opacity: 1, y: 0, duration: 0.3 });
-tl.to(".mod-gamif .separator-line, .mod-gamif .actor-chips", { opacity: 1, duration: 0.2 });
-
-// ETAPE 8 : SYNTHÈSE GLOBALE (DASHBOARDS)
-tl.addLabel("step8", "+=0.3");
-tl.to(".link-agent-dash, .link-man-dash, .link-dir-dash", { opacity: 0.5, duration: 0.4 });
-tl.to(".link-agent-eval, .link-man-eval", { opacity: 1, duration: 0.3 }, "-=0.1");
+// ETAPE 8 : PILOTAGE & DASHBOARDS
+tl.addLabel("step8", "+=0.2");
+tl.to(".mod-dashboard", { scale: 1.03, boxShadow: "0 10px 30px rgba(51,65,85,0.15)", duration: 0.5 });
+tl.to(".link-agent-dash, .link-man-dash, .link-dir-dash", { opacity: 0.8, duration: 0.4 }, "-=0.3");
 tl.to(".mod-dashboard .uc-pill", { opacity: 1, y: 0, duration: 0.4 });
 tl.to(".mod-dashboard .separator-line, .mod-dashboard .actor-chips", { opacity: 1, duration: 0.3 });
+tl.to(".mod-dashboard", { scale: 1, duration: 0.3 });
 
-// ETAPE 9 : MAIN LOOP ANIMATION
-tl.addLabel("step9", "+=0.3");
-tl.to(".flow-eval-score, .flow-score-analytics, .flow-analytics-ia, .flow-ia-formation", {
+// ETAPE 9 : BOUCLE CONTINUE
+tl.addLabel("step9", "+=0.5");
+tl.to(".flow", {
   strokeDashoffset: -400,
-  duration: 2.5,
+  duration: 3,
   repeat: -1,
   ease: "none"
 });
@@ -882,12 +1093,18 @@ let maxSteps = 9;
 function playAutoMode() {
   isPresenting = false;
   document.body.classList.remove("presenting");
-  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation (Pas-à-pas)';
+  
+  // Nettoyage complet des effets de focus et pulsation
+  document.querySelectorAll('.is-focused, .is-dimmed, .pulse-focus').forEach(el => {
+    el.classList.remove('is-focused', 'is-dimmed', 'pulse-focus');
+  });
+
+  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-play" style="margin-right: 6px;"></i>Mode Présentation';
   document.getElementById("presentBtn").style.background = "#0A2463";
   document.getElementById("story-panel").style.display = "none";
   gsap.set(".mod-analytics, .mod-ia, .mod-formation", { clearProps: "boxShadow,y" });
   
-  tl.restart(); // Lit toute la timeline automatiquement sans pause !
+  tl.restart(); 
 }
 
 // Lancement par défaut en mode AUTO
@@ -908,28 +1125,24 @@ document.getElementById("presentBtn").onclick = (e) => {
   tl.progress(0); 
   gsap.set(".mod-analytics, .mod-ia, .mod-formation", { clearProps: "boxShadow,y" });
   
-  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-hand-pointer" style="margin-right: 6px;"></i>Cliquer (n\'importe où) pour continuer';
-  document.getElementById("presentBtn").style.background = "#10B981"; // Active Green
+  document.getElementById("presentBtn").innerHTML = '<i class="fas fa-hand-pointer" style="margin-right: 6px;"></i>Cliquer pour continuer';
+  document.getElementById("presentBtn").style.background = "#10B981"; 
   
   currentStep = 0;
-  updateStoryUI(currentStep); // Affiche le panel de l'étape 0
-  tl.tweenTo("step0"); // Joue l'initialisation et s'arrête
+  updateStoryUI(currentStep); // Affiche le texte de l'étape 0
+  tl.tweenTo("step1"); // JOUE l'étape 0 immédiatement
 };
 
 document.addEventListener("click", (e) => {
   if (isPresenting && !e.target.closest('.control-btn')) {
     
-    // Empêcher de double-cliquer pendant qu'une étape d'animation se joue
-    if (tl.isActive()) {
-      return;
-    }
+    if (tl.isActive()) return;
     
     if (currentStep < maxSteps) {
       currentStep++;
-      updateStoryUI(currentStep); // Mise à jour asynchrone du texte
-      tl.tweenTo("step" + currentStep); // On passe à l'étape suivante et ça se met en pause automatiquement
+      updateStoryUI(currentStep); 
+      tl.tweenTo("step" + currentStep); 
     } else {
-      // Fin de la présentation -> bascule sur la boucle infinie
       playAutoMode();
     }
   }
@@ -946,10 +1159,6 @@ document.addEventListener("mousemove", (e) => {
     });
   }
 });
-</script>
-
-</body>
-</html>
 </script>
 
 </body>
