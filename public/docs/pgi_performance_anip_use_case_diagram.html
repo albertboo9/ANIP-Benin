@@ -400,8 +400,8 @@
   .type-include { background: #EDE9FE; color: #6D28D9; }
   .type-extend  { background: #DBEAFE; color: #1D4ED8; }
 
-  /* UC8 links (initially hidden) */
-  .link-agent-eval, .link-man-eval { stroke-opacity: 0 !important; opacity: 0; }
+  /* UC8 links (initially hidden by opacity, but NOT stroke-opacity force) */
+  .link-agent-eval, .link-man-eval { opacity: 0; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
@@ -774,15 +774,24 @@ const tl = gsap.timeline({ paused: true });
 
 // SET STATES
 gsap.set(".uc-pill, .separator-line, .actor-chips, .actor-link, .flow, .rel-label", { opacity: 0 });
-gsap.set(".link-agent-eval, .link-man-eval", { opacity: 0, strokeOpacity: 0 }); // Hidden initially
+gsap.set(".link-agent-eval, .link-man-eval", { opacity: 0 }); // Masqués au départ
 gsap.set(".uc-pill", { y: 10 });
 gsap.set(".system-boundary", { opacity: 0, scale: 0.98 });
 gsap.set(".actor", { opacity: 0, x: -30 });
 gsap.set(".module", { opacity: 0, y: 20 });
 
-// Helper to calculate and set strokeDasharray dynamically
-document.querySelectorAll('.flow').forEach(path => {
-  const length = path.getTotalLength();
+// Helper for stroke dash animations
+document.querySelectorAll('.flow, .link-agent-eval, .link-man-eval').forEach(path => {
+  let length;
+  if (path.tagName === 'line') {
+    const x1 = path.x1.baseVal.value;
+    const y1 = path.y1.baseVal.value;
+    const x2 = path.x2.baseVal.value;
+    const y2 = path.y2.baseVal.value;
+    length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  } else {
+    length = path.getTotalLength();
+  }
   gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
 });
 
@@ -815,7 +824,15 @@ tl.to(".mod-performance", { scale: 1, duration: 0.3 }, "+=0.1");
 // ETAPE 3 : ACTION - ÉVALUATION QUOTIDIENNE (AGENT)
 tl.addLabel("step3", "+=0.2");
 tl.to(".mod-evaluation", { scale: 1.05, boxShadow: "0 10px 25px rgba(194,65,12,0.2)", duration: 0.4 });
-tl.to(".link-agent-eval, .link-man-eval", { opacity: 1, strokeOpacity: 1, duration: 0.6, stagger: 0.2 });
+tl.to(".link-agent-eval, .link-man-eval", { 
+  opacity: 1, 
+  strokeOpacity: 1, 
+  visibility: "visible", 
+  strokeDashoffset: 0, 
+  duration: 1.2, 
+  ease: "power2.inOut", 
+  stagger: 0.3 
+});
 tl.to(".link-agent-perf", { opacity: 0.8, duration: 0.4 }, "-=0.3");
 tl.to(".mod-evaluation .uc-pill", { opacity: 1, y: 0, duration: 0.4 });
 tl.to(".mod-evaluation .separator-line, .mod-evaluation .actor-chips", { opacity: 1, duration: 0.3 });
@@ -929,8 +946,8 @@ document.addEventListener("click", (e) => {
     
     if (currentStep < maxSteps) {
       currentStep++;
-      updateStoryUI(currentStep); // Mise à jour asynchrone du texte
-      tl.tweenTo("step" + currentStep); // On passe à l'étape suivante et ça se met en pause automatiquement
+      updateStoryUI(currentStep); // Mise à jour du texte AVANT l'animation
+      tl.tweenTo("step" + currentStep); // On joue jusqu'à l'étiquette de l'étape
     } else {
       // Fin de la présentation -> bascule sur la boucle infinie
       playAutoMode();
